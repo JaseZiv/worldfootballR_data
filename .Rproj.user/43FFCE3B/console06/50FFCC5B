@@ -28,3 +28,82 @@ Untracked files:
 
 nothing added to commit but untracked files present (use "git add" to track)
 ]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git add  .
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git comm it -m "first commit"
+[master (root-commit) d29c76f] first commit
+ 13 files changed, 940 insertions(+)
+ create mode 100644 .Rproj.user/43FFCE3B/console06/50FFCC5B
+ create mode 100644 .Rproj.user/43FFCE3B/console06/50FFCC5B.env
+ create mode 100644 .Rproj.user/43FFCE3B/console06/INDEX001
+ create mode 100644 .Rproj.user/43FFCE3B/sources/prop/6160228E
+ create mode 100644 .Rproj.user/43FFCE3B/sources/prop/INDEX
+ create mode 100644 .Rproj.user/43FFCE3B/sources/s-32DEC0C8/4AE1A18F-contents
+ create mode 100644 .Rproj.user/43FFCE3B/sources/s-32DEC0C8/lock_file
+ create mode 100644 .Rproj.user/shared/notebooks/patch-chunk-names
+ create mode 100644 .Rproj.user/shared/notebooks/paths
+ create mode 100644 .gitignore
+ create mode 100644 raw-data/league_seasons/all_tier1_season_URLs.csv
+ create mode 100644 raw-data/league_seasons/get_league_seasons.R
+ create mode 100644 worldfootballR_data.Rproj
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git push [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kh
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin master
+
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git push  -u origin main
+error: src refspec main does not match any
+[31merror: failed to push some refs to 'https://github.com/JaseZiv/worldfootballR_data.git'
+[m]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git push  --set-upstream origin master
+Enumerating objects: 23, done.
+Counting objects:   4% (1/23)   Counting objects:   8% (2/23)   Counting objects:  13% (3/23)   Counting objects:  17% (4/23)   Counting objects:  21% (5/23)   Counting objects:  26% (6/23)   Counting objects:  30% (7/23)   Counting objects:  34% (8/23)   Counting objects:  39% (9/23)   Counting objects:  43% (10/23)   Counting objects:  47% (11/23)   Counting objects:  52% (12/23)   Counting objects:  56% (13/23)   Counting objects:  60% (14/23)   Counting objects:  65% (15/23)   Counting objects:  69% (16/23)   Counting objects:  73% (17/23)   Counting objects:  78% (18/23)   Counting objects:  82% (19/23)   Counting objects:  86% (20/23)   Counting objects:  91% (21/23)   Counting objects:  95% (22/23)   Counting objects: 100% (23/23)   Counting objects: 100% (23/23), done.
+Delta compression using up to 8 threads
+Compressing objects:   5% (1/18)   Compressing objects:  11% (2/18)   Compressing objects:  16% (3/18)   Compressing objects:  22% (4/18)   Compressing objects:  27% (5/18)   Compressing objects:  33% (6/18)   Compressing objects:  38% (7/18)   Compressing objects:  44% (8/18)   Compressing objects:  50% (9/18)   Compressing objects:  55% (10/18)   Compressing objects:  61% (11/18)   Compressing objects:  66% (12/18)   Compressing objects:  72% (13/18)   Compressing objects:  77% (14/18)   Compressing objects:  83% (15/18)   Compressing objects:  88% (16/18)   Compressing objects:  94% (17/18)   Compressing objects: 100% (18/18)   Compressing objects: 100% (18/18), done.
+Writing objects:   4% (1/23)   Writing objects:   8% (2/23)   Writing objects:  13% (3/23)   Writing objects:  17% (4/23)   Writing objects:  21% (5/23)   Writing objects:  26% (6/23)   Writing objects:  30% (7/23)   Writing objects:  34% (8/23)   Writing objects:  39% (9/23)   Writing objects:  43% (10/23)   Writing objects:  47% (11/23)   Writing objects:  52% (12/23)   Writing objects:  56% (13/23)   Writing objects:  60% (14/23)   Writing objects:  65% (15/23)   Writing objects:  69% (16/23)   Writing objects:  73% (17/23)   Writing objects:  78% (18/23)   Writing objects:  82% (19/23)   Writing objects:  86% (20/23)   Writing objects:  91% (21/23)   Writing objects:  95% (22/23)   Writing objects: 100% (23/23)   Writing objects: 100% (23/23), 14.36 KiB | 257.00 KiB/s, done.
+Total 23 (delta 0), reused 0 (delta 0)
+To https://github.com/JaseZiv/worldfootballR_data.git
+ * [new branch]      master -> master
+Branch 'master' set up to track remote branch 'master' from 'origin'.
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git pull [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kl
+remote: Enumerating objects: 6, done.[K
+remote: Counting objects:  16% (1/6)[Kremote: Counting objects:  33% (2/6)[Kremote: Counting objects:  50% (3/6)[Kremote: Counting objects:  66% (4/6)[Kremote: Counting objects:  83% (5/6)[Kremote: Counting objects: 100% (6/6)[Kremote: Counting objects: 100% (6/6), done.[K
+remote: Compressing objects:  33% (1/3)[Kremote: Compressing objects:  66% (2/3)[Kremote: Compressing objects: 100% (3/3)[Kremote: Compressing objects: 100% (3/3), done.[K
+remote: Total 5 (delta 1), reused 0 (delta 0), pack-reused 0[K
+Unpacking objects:  20% (1/5)   Unpacking objects:  40% (2/5)   Unpacking objects:  60% (3/5)   Unpacking objects:  80% (4/5)   Unpacking objects: 100% (5/5)   Unpacking objects: 100% (5/5), done.
+From https://github.com/JaseZiv/worldfootballR_data
+   d29c76f..242f3f4  master     -> origin/master
+Updating d29c76f..242f3f4
+Fast-forward
+ .github/workflows/main.yml | 34 [32m++++++++++++++++++++++++++++[m
+ 1 file changed, 34 insertions(+)
+ create mode 100644 .github/workflows/main.yml
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ touch ra w-data/job_controller.R
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ touch RE ADME.md
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git stat us
+On branch master
+Your branch is up to date with 'origin/master'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git checkout -- <file>..." to discard changes in working directory)
+
+	[31mmodified:   .Rproj.user/43FFCE3B/console06/50FFCC5B[m
+	[31mmodified:   .Rproj.user/43FFCE3B/sources/prop/INDEX[m
+	[31mmodified:   raw-data/league_seasons/get_league_seasons.R[m
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	[31m.Rproj.user/43FFCE3B/sources/prop/217B993D[m
+	[31m.Rproj.user/43FFCE3B/sources/prop/833ADCB1[m
+	[31m.Rproj.user/43FFCE3B/sources/prop/CB10FBDF[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/390C2F7B[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/390C2F7B-contents[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/4BAD8C80[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/4BAD8C80-contents[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/E8AB7CF9[m
+	[31m.Rproj.user/43FFCE3B/sources/s-32DEC0C8/E8AB7CF9-contents[m
+	[31mREADME.md[m
+	[31mraw-data/job_controller.R[m
+
+no changes added to commit (use "git add" and/or "git commit -a")
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git add  .

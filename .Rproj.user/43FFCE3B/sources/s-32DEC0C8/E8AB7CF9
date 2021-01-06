@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1609897939064.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "432800590",
+    "id" : "E8AB7CF9",
+    "lastKnownWriteTime" : 1609898381,
+    "last_content_update" : 1609898381836,
+    "path" : "~/Desktop/worldfootballR_data/raw-data/league_seasons/get_league_seasons.R",
+    "project_path" : "raw-data/league_seasons/get_league_seasons.R",
+    "properties" : {
+        "cursorPosition" : "50,118",
+        "scrollLine" : "19"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
