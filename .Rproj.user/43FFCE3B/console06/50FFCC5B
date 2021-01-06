@@ -1,0 +1,30 @@
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+]0;~/Desktop/worldfootballR_data[?1034hJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ mkdir[K[K[K[K[Ktouch .g itignore
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ open .gi tignore 
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git init [A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Kt
+Initialized empty Git repository in /Users/jasonzivkovic/Desktop/worldfootballR_data/.git/
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git remo te add origin https://github.com/JaseZiv/worldfootballR_data.g it
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git push  -u origin main
+error: src refspec main does not match any
+[31merror: failed to push some refs to 'https://github.com/JaseZiv/worldfootballR_data.git'
+[m]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git bran ch -M main
+error: refname refs/heads/master not found
+fatal: Branch rename failed
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git stat us
+On branch master
+
+No commits yet
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	[31m.Rproj.user/[m
+	[31m.gitignore[m
+	[31mraw-data/[m
+	[31mworldfootballR_data.Rproj[m
+
+nothing added to commit but untracked files present (use "git add" to track)
+]0;~/Desktop/worldfootballR_dataJasons-MacBook-Pro:worldfootballR_data jasonzivkovic$ git add  .
