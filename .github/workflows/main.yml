@@ -20,7 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
       - name: Package Installation
-        run: Rscript -e 'install.packages(c("dplyr", "rvest", "httr", "stringr", "here", "xml2", "purrr", "janitor", "glue"))'
+        run: Rscript -e 'install.packages(c("devtools", "dplyr", "rvest", "httr", "stringr", "here", "xml2", "purrr", "janitor", "glue"))'
       - name: worldfootballR Package Installation
         run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
       - name: Updated Data
