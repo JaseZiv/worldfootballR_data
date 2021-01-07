@@ -1,3 +1,4 @@
+library(tidyverse)
 library(worldfootballR)
 
 .get_tier1_competitions <- function() {
