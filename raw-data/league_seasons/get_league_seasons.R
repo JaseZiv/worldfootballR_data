@@ -1,5 +1,23 @@
 library(worldfootballR)
 
+.get_tier1_competitions <- function() {
+  main_url <- "https://fbref.com"
+  # read page to all competitions
+  all_comps_url <- xml2::read_html("https://fbref.com/en/comps/")
+  # this just gets the Tier 1 club comps - this will need to be modified if more comps are required
+  comps <- all_comps_url %>% rvest::html_nodes("#all_comps_1_fa_club_league_senior")
+  # get the urls for each competition, then paste fbref url
+  competition_urls <- comps %>% rvest::html_node("tbody") %>% rvest::html_nodes("th a") %>% rvest::html_attr("href")
+  competition_urls <- paste0(main_url, competition_urls)
+  # scrape the table that contains the competitons
+  competitions <- comps %>% rvest::html_nodes(".sortable") %>% rvest::html_table() %>% data.frame()
+  # add the competition url column
+  competitions <- cbind(competitions, competition_urls)
+  # remove the two character country code for the flag, and only leave the 3 character code
+  competitions$Country <- gsub(".*? ", "", competitions$Country)
+
+  return(competitions)
+}
 
 
 get_league_seasons_url <- function() {
