@@ -55,6 +55,7 @@ get_league_seasons_url <- function() {
     #   rvest::html_attr("href") %>% .[grepl("Fixtures", .)] %>% paste0(main_url, .)
     
     get_fixtures <- function(season_url) {
+      round(runif(1, 3, 10))
       fixtures_url <- xml2::read_html(season_url) %>%
         rvest::html_nodes(".hoversmooth") %>%
         rvest::html_nodes(".full") %>%
