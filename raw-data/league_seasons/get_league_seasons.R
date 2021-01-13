@@ -48,8 +48,32 @@ get_league_seasons_url <- function() {
       rvest::html_attr("href") %>%
       paste0(main_url, .)
     
+    # fixtures_url <- xml2::read_html(season_url) %>%
+    #   rvest::html_nodes(".hoversmooth") %>%
+    #   rvest::html_nodes(".full") %>%
+    #   rvest::html_nodes("a") %>%
+    #   rvest::html_attr("href") %>% .[grepl("Fixtures", .)] %>% paste0(main_url, .)
     
-    all_league_seasons <- cbind(league_url, seasons, season_end_year, seasons_urls) %>% data.frame()
+    get_fixtures <- function(season_url) {
+      fixtures_url <- xml2::read_html(season_url) %>%
+        rvest::html_nodes(".hoversmooth") %>%
+        rvest::html_nodes(".full") %>%
+        rvest::html_nodes("a") %>%
+        rvest::html_attr("href") %>% .[grepl("Fixtures", .)] %>% paste0(main_url, .)
+      
+      fixtures_url <- if(grepl("Fixtures", fixtures_url)){
+        fixtures_url <- fixtures_url
+      } else {
+        fixtures_url <- NA
+      }
+      
+      return(fixtures_url)
+    }
+    
+    fixtures_url <- seasons_urls %>% 
+      purrr::map_chr(get_fixtures)
+    
+    all_league_seasons <- cbind(league_url, seasons, season_end_year, seasons_urls, fixtures_url) %>% data.frame()
     
     
     return(all_league_seasons)
