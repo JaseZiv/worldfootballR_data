@@ -40,8 +40,7 @@ library(rvest)
     full_df <- dplyr::bind_rows(full_df, tab)
     
     full_df <- full_df %>%
-      dplyr::select(Competition.Type, Competition.Name, Country, dplyr::everything()) %>% 
-      dplyr::filter(Competition.Type != "Big 5 European Leagues")
+      dplyr::select(Competition.Type, Competition.Name, Country, dplyr::everything())
     
     full_df$Country <- gsub(".*? ", "", full_df$Country)
   }
@@ -108,7 +107,15 @@ get_league_seasons_url <- function() {
   all_urls <- league_urls %>% 
     purrr::map_df(get_urls) %>% 
     dplyr::left_join(competitions, ., by = c("comp_url" = "league_url")) %>% 
-    janitor::clean_names()
+    janitor::clean_names() %>%
+    # want to keep the big five leagues combined, but not the individual leages (these would be duplicated if kept in)
+    dplyr::mutate(filter_out = dplyr::case_when(
+      str_detect(competition_type, "Big 5") & !str_detect(competition_name, "Big 5 ") ~ "Y",
+      TRUE ~ "N"
+    )) %>% 
+    dplyr::filter(filter_out == "N")
+  
+  return(all_urls)
   
 }
 
