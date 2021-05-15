@@ -11,4 +11,5 @@ The data is updated  on a CRON schedule at 09:00 UTC (8pm AEDT).
 
 ## The Data
 
-* [Tier-1 League Season URLs](https://github.com/JaseZiv/worldfootballR_data/blob/master/raw-data/league_seasons/all_tier1_season_URLs.csv)
+* [Fbref Comps and Leagues](https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/all_leages_and_cups/all_competitions.csv)
+* [Transfermarkt Leagues](https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/transfermarkt_leagues/main_comp_seasons.csv)
