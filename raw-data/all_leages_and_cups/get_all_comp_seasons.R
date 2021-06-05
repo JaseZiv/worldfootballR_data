@@ -122,5 +122,8 @@ get_league_seasons_url <- function() {
 
 all_comp_urls <- get_league_seasons_url()
 
+all_comp_urls <- all_comp_urls %>% 
+  dplyr::mutate(tier = ifelse(stringr::str_detect(competition_type, "Youth"), "Youth", tier))
+
 write.csv(all_comp_urls, here::here("raw-data", "all_leages_and_cups", "all_competitions.csv"), row.names = F)
 
