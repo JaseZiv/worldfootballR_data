@@ -13,4 +13,4 @@ The data is updated  on a CRON schedule at 09:00 UTC (8pm AEDT).
 
 * [Fbref Comps and Leagues](https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/all_leages_and_cups/all_competitions.csv)
 * [Transfermarkt Leagues](https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/transfermarkt_leagues/main_comp_seasons.csv)
-* [Mapping between FBref and Transfermarkt Players]()
+* [Mapping between FBref and Transfermarkt Players](https://github.com/JaseZiv/worldfootballR_data/blob/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv)

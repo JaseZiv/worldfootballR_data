@@ -13,7 +13,7 @@ To update the data, first run `prepare_working_files.R`. This will generate a li
 * `joined_missing.csv` contains the players who haven't been able to be matched by the automated script. These need to be manually investigated and then overwrite the `joined_missing_manual_fix.csv` file
 * `duplicate_players_df.csv` contains a list of players who have been joined using the automated script, however duplicates have arisen. Manually fix these duplicates by removing the spurious matches, then save to file called `duplicate_players_df_manual_fix.csv`.
 
-Once these files have been manually fixed, run `create_final_data.R` and the final output file will be written to `output/fbref_to_tm_mapping.csv`.
+Once these files have been manually fixed, run `create_final_data.R` and the final output file will be written to [`output/fbref_to_tm_mapping.csv`](https://github.com/JaseZiv/worldfootballR_data/blob/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv).
 
 
 ## Contributing
