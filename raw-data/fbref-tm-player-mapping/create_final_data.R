@@ -22,4 +22,4 @@ matched_data <- matched_data %>%
 final_output <- bind_rows(existing_df, matched_data) %>%
   arrange(PlayerFBref)
 
-write.csv(matched_data, here("raw-data", "fbref-tm-player-mapping", "output", "fbref_to_tm_mapping.csv"), row.names = FALSE)
+write.csv(final_output, here("raw-data", "fbref-tm-player-mapping", "output", "fbref_to_tm_mapping.csv"), row.names = FALSE)
