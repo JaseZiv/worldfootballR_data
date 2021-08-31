@@ -14,7 +14,10 @@ jobs:
   scrape-and-push:
     # The type of runner that the job will run on
     runs-on: macOS-latest
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    # retrieve token
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
