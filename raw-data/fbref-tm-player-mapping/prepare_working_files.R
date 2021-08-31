@@ -10,7 +10,7 @@ tm <- get_player_market_values(country_name = c("England", "Spain", "France", "I
                                        start_year = 2021)
 
 
-matched_data <- read.csv(here("raw-data", "fbref-tm-player-mapping", "output", "initial-match", "fbref_to_tm_up_to_20-21.csv"), stringsAsFactors = FALSE)
+matched_data <- read.csv("https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv", stringsAsFactors = FALSE)
 
 
 fbref <- playing_time %>% filter(!Url %in% matched_data$UrlFBref)

@@ -2,7 +2,7 @@ library(worldfootballR)
 library(tidyverse)
 library(here)
 
-existing_df <- read.csv(here("raw-data", "fbref-tm-player-mapping", "output", "initial-match", "fbref_to_tm_up_to_20-21.csv"), stringsAsFactors = FALSE)
+existing_df <- read.csv("https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv", stringsAsFactors = FALSE)
 
 # read in files
 joined_finished <- read.csv(here("raw-data", "fbref-tm-player-mapping", "output", "working-files", "joined_finished.csv"), stringsAsFactors = F)
@@ -20,6 +20,7 @@ matched_data <- matched_data %>%
   select(PlayerFBref=Player, UrlFBref=Url, UrlTmarkt=player_url)
 
 final_output <- bind_rows(existing_df, matched_data) %>%
-  arrange(PlayerFBref)
+  arrange(PlayerFBref) %>% 
+  distinct(UrlFBref, .keep_all=T)
 
 write.csv(final_output, here("raw-data", "fbref-tm-player-mapping", "output", "fbref_to_tm_mapping.csv"), row.names = FALSE)
