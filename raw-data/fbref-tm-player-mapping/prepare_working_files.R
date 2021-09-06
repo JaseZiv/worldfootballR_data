@@ -27,7 +27,9 @@ tm <- tm %>%
 
 # want a df to help with inspection of names with special characters
 tm_unique <- tm %>%
-  distinct(player_name, player_dob, player_url) %>%
+  arrange(player_url, desc(season_start_year)) %>% 
+  distinct(player_name, player_dob, player_url, .keep_all = TRUE) %>%
+  select(player_name, player_dob, player_url, player_position) %>% 
   mutate(tm_surname = str_squish(gsub(".*\\s", "", player_name)),
          tm_yob = lubridate::year(player_dob))
 
@@ -37,7 +39,7 @@ tm_unique <- tm %>%
 #   left_join(tm %>% select(player_name, player_dob, player_url) %>% distinct(player_url, .keep_all = T), by = c("Player" = "player_name"))
 
 joined_primary <- fbref %>% select(Player, Born, Url) %>% distinct(Url, .keep_all = T) %>%
-  left_join(tm_unique %>% select(player_name, player_dob, player_url, tm_yob) %>% distinct(player_url, .keep_all = T),
+  left_join(tm_unique %>% select(player_name, player_dob, player_url, player_position, tm_yob) %>% distinct(player_url, .keep_all = T),
             by = c("Player" = "player_name", "Born" = "tm_yob"))
 
 # arrange by player name
@@ -68,7 +70,7 @@ joined_missing <- joined_primary %>%
 joined_secondary <- joined_missing %>%
   mutate(fbref_surname = gsub(".*\\s", "", Player)) %>%
   select(-player_dob, -player_url) %>%
-  left_join(tm_unique, by = c("fbref_surname" = "tm_surname", "Born" = "tm_yob"))
+  left_join(tm_unique, by = c("fbref_surname" = "tm_surname", "Born" = "tm_yob", "player_position"))
 
 # now there are some more duplicates as a result of this secondary join method
 additional_duplicated_players <- joined_secondary %>%
