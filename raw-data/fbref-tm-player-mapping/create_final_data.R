@@ -1,5 +1,6 @@
 library(worldfootballR)
 library(tidyverse)
+library(googlesheets4)
 library(here)
 
 existing_df <- read.csv("https://github.com/JaseZiv/worldfootballR_data/raw/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv", stringsAsFactors = FALSE)
@@ -52,5 +53,19 @@ final_output <- bind_rows(existing_df, matched_data) %>%
   arrange(PlayerFBref) %>% 
   distinct(UrlFBref, .keep_all=T)
 
-# write file:
+#=============
+# Write Files
+#=============
+
+# write file for commit to GitHub:
 write.csv(final_output, here("raw-data", "fbref-tm-player-mapping", "output", "fbref_to_tm_mapping.csv"), row.names = FALSE)
+
+# Write file to Googlesheets:
+# get the sheet id
+ss <- as_sheets_id("https://docs.google.com/spreadsheets/d/1GjjS9IRp6FVzVX5QyfmttMk8eYBtIzuZ_YIM0VWg8OY/edit#gid=61874932") %>% 
+  as.character()
+
+# write the sheet
+sheet_write(final_output,
+            ss,
+            sheet = "fbref_to_tm_mapping")

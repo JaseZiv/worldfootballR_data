@@ -15,6 +15,9 @@ To update the data, first run `prepare_working_files.R`. This will generate a li
 
 Once these files have been manually fixed, run `create_final_data.R` and the final output file will be written to [`output/fbref_to_tm_mapping.csv`](https://github.com/JaseZiv/worldfootballR_data/blob/master/raw-data/fbref-tm-player-mapping/output/fbref_to_tm_mapping.csv).
 
+### Update (2021-10-29): Write to Googlesheets
+
+The project also writes the mapped data to a gogglesheet, found [here](https://docs.google.com/spreadsheets/d/1GjjS9IRp6FVzVX5QyfmttMk8eYBtIzuZ_YIM0VWg8OY/edit#gid=61874932).
 
 ## Contributing
 
