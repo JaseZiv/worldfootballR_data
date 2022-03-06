@@ -80,7 +80,7 @@ extract_season_ids_for_popular_league <- function(league_name) {
     tibble::as_tibble() %>% 
     janitor::clean_names() %>% 
     dplyr::rename(ccode = country_code, season = seasons) %>% 
-    tidyr::unnest_wider(season, names_sep = '_')
+    tidyr::unnest_wider(season, names_sep = "_")
 }
 
 popular_season_ids <- season_ids_2022 %>% 
