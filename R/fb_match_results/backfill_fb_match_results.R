@@ -38,24 +38,39 @@ library(here)
   
   season_name <- fixtures_page %>% rvest::html_nodes("h2 span") %>% rvest::html_text() %>% .[1]
   
-  season_summary <- fixtures_page %>%
-    rvest::html_table() %>% .[1] %>% data.frame() %>%
-    dplyr::filter(.data$Date != "")
-  
-  
-  # tab_holder <- fixtures_page %>%
-  #   rvest::html_nodes(".stats_table tbody tr")
-  
   tab_holder <- fixtures_page %>%
     rvest::html_node(".stats_table tbody") %>% rvest::html_nodes("tr")
   
-  tab_holder <- tab_holder[!grepl("spacer partial", xml2::xml_attrs(tab_holder))]
+  spacer_idx <- !grepl("spacer partial", xml2::xml_attrs(tab_holder))
+  
+  tab_holder <- tab_holder[spacer_idx]
   
   idx_rm <- grep("thead", xml2::xml_attrs(tab_holder))
   
   if(length(idx_rm) != 0) {
     tab_holder <- tab_holder[-idx_rm]
   }
+  
+  season_summary <- tryCatch(fixtures_page %>%
+                               rvest::html_table() %>% .[1] %>% data.frame(), error = function(e) data.frame())
+  
+  # error handling - The first available Iranian season has something weird in the HTML, meaning the above code wont work
+  # (https://fbref.com/en/comps/64/741/schedule/2014-2015-Persian-Gulf-Pro-League-Scores-and-Fixtures)
+  if(nrow(season_summary) == 0) {
+    season_summary <- fixtures_page %>% rvest::html_node(".stats_table") %>%
+      rvest::html_table() %>% data.frame()
+  }
+  
+  season_summary <- season_summary[spacer_idx,]
+  
+  if(length(idx_rm) != 0) {
+    season_summary <- season_summary[-idx_rm,]
+  }
+  
+  
+  # tab_holder <- fixtures_page %>%
+  #   rvest::html_nodes(".stats_table tbody tr")
+  
   
   get_url <- function(tab_element) {
     a <- tab_element %>% rvest::html_node(xpath='.//*[@data-stat="match_report"]//a') %>% rvest::html_attr("href")
@@ -109,6 +124,7 @@ library(here)
   }
   
   season_summary <- season_summary %>%
+    dplyr::mutate(Wk = as.character(.data$Wk)) %>% 
     dplyr::mutate(MatchURL = match_urls)
   
   return(season_summary)
@@ -179,13 +195,16 @@ countries_to_get <- seasons %>%
                 !is.na(.data$country)) %>% 
   filter(!is.na(country), country != "") %>% pull(country) %>% unique()
 
-exclude_countries <- c("ENG", "BEL")
+exclude_countries <- c("ENG", "BEL", "ARG", "AUS", "AUT")
 countries_new <- countries_to_get[!countries_to_get %in% exclude_countries]
 
 # countries_to_get <- seasons %>% filter(!is.na(country), country != "") %>% pull(country) %>% unique()
 
 
-
+for(each_country in countries_to_get[24:length(countries_to_get)]){
+  print(paste("Scraping", each_country))
+  backfill_historical_results(each_country)
+}
 
 
 
