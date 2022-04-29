@@ -16,6 +16,9 @@ matched_data <- read.csv("https://github.com/JaseZiv/worldfootballR_data/raw/mas
 fbref <- playing_time %>% filter(!Url %in% matched_data$UrlFBref)
 
 fbref <- fbref %>%
+  # have made the decision to get rid of players that were listed on team sheets but 
+  # haven't yet played as there's too many manual matches of youth players
+  filter(!is.na(Min_Playing.Time)) %>% 
   select(Season_End_Year, Squad, Comp, Player, Nation, Born, Url) %>%
   mutate(fbref_surname = str_squish(gsub(".*\\s", "", Player))) %>%
   arrange(Player)
