@@ -59,6 +59,7 @@ get_league_seasons_url <- function() {
     dplyr::pull(.data$comp_url)
   
   get_urls <- function(league_url) {
+    Sys.sleep(runif(1, min=4, max=10))
     print(glue::glue("Scraping season URLs from {league_url}"))
     league_page <- xml2::read_html(league_url)
     
@@ -79,7 +80,7 @@ get_league_seasons_url <- function() {
     
     
     get_fixtures <- function(season_url) {
-      round(runif(1, 3, 10))
+      Sys.sleep(runif(1, min=4, max=10))
       fixtures_url <- xml2::read_html(season_url) %>%
         rvest::html_nodes(".hoversmooth") %>%
         rvest::html_nodes(".full") %>%
