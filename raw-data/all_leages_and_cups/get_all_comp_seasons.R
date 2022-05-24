@@ -1,11 +1,20 @@
 library(tidyverse)
 library(rvest)
 
+# thanks to TanHo for the below reading function
+.get_page <- function(url){
+  httr::GET(url,httr::user_agent("worldfootballR data package <https://github.com/JaseZiv/worldfootballR>"))  %>%  
+    httr::content(as = "text")  %>%  
+    rvest::read_html()
+}
+
+get_page <- ratelimitr::limit_rate(.get_page, ratelimitr::rate(1,3))
+
 
 .get_competitions <- function() {
   
   main_url <- "https://fbref.com"
-  comps_page <- read_html("https://fbref.com/en/comps/")
+  comps_page <- get_page("https://fbref.com/en/comps/")
   
   
   tabs <- comps_page %>% html_nodes(".table_wrapper")
@@ -59,9 +68,9 @@ get_league_seasons_url <- function() {
     dplyr::pull(.data$comp_url)
   
   get_urls <- function(league_url) {
-    Sys.sleep(runif(1, min=4, max=10))
+    # Sys.sleep(runif(1, min=4, max=10))
     print(glue::glue("Scraping season URLs from {league_url}"))
-    league_page <- xml2::read_html(league_url)
+    league_page <- get_page(league_url)
     
     seasons <- league_page %>%
       rvest::html_nodes("th a") %>%
@@ -78,26 +87,15 @@ get_league_seasons_url <- function() {
       rvest::html_attr("href") %>%
       paste0(main_url, .)
     
+    # use regex to construct fixtures_urls... this may cause some downstream issues as not all
+    # season_urls have fixture URLs (individual matches not on FBref for some leagues historically)
+    # but still, the time saving and not being blocked is worth this as error handling in worldfootballR
+    # functions should just return zero row data frames
+    to_keep <- gsub(".*/", "", seasons_urls) %>% gsub("-Stats", "-Scores-and-Fixtures", .)
+    url_stripped <- sub("/[^/]+$", "", seasons_urls)
+    url_amend <- paste0(url_stripped, "/schedule/")
     
-    get_fixtures <- function(season_url) {
-      Sys.sleep(runif(1, min=4, max=10))
-      fixtures_url <- xml2::read_html(season_url) %>%
-        rvest::html_nodes(".hoversmooth") %>%
-        rvest::html_nodes(".full") %>%
-        rvest::html_nodes("a") %>%
-        rvest::html_attr("href") %>% .[grepl("Fixtures", .)] %>% paste0(main_url, .)
-      
-      fixtures_url <- if(grepl("Fixtures", fixtures_url)){
-        fixtures_url <- fixtures_url
-      } else {
-        fixtures_url <- NA
-      }
-      
-      return(fixtures_url)
-    }
-    
-    fixtures_url <- seasons_urls %>% 
-      purrr::map_chr(get_fixtures)
+    fixtures_url <- paste0(url_amend, to_keep)
     
     all_league_seasons <- cbind(league_url, seasons, season_end_year, seasons_urls, fixtures_url) %>% data.frame()
     
