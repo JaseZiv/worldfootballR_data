@@ -1,0 +1,38 @@
+
+name: Store match results
+
+# Controls when the action will run - have set this to run at 14:30 every Sun, Mon, Tue, Sat. 
+on:
+  schedule:
+    - cron: "0 14 * * 0,1,2,6"
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  update-match-results:
+    # The type of runner that the job will run on
+    runs-on: macOS-latest
+    # retrieve token
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+      - name: Package Installation
+        run: Rscript -e 'install.packages(c("tidyverse" ,"devtools", "dplyr", "stringr", "here"))'
+      - name: worldfootballR Package Installation
+        run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
+      - name: Update match results
+        run: Rscript -e 'source(here::here("R", "fb_match_results", "update_fb_match_results.R"), echo = TRUE)'
+      - name: Update advanced season stats
+        run: Rscript -e 'source(here::here("R", "fb_big5_advanced_season_stats", "update_big5_advanced_stats.R"), echo = TRUE)'
+      - name: Commit
+        run: |
+          git config --global user.name 'JaseZiv'
+          git config --global user.email 'jaseziv83@gmail.com'
+          git add .
+          git commit -m 'updating data' || echo "No changes to commit"
+          git push || echo "No changes to commit"
