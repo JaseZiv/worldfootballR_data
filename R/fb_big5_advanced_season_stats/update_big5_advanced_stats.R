@@ -26,6 +26,7 @@ stat_types <- c("standard", "playing_time", "shooting", "passing", "passing_type
 for(each_stat in stat_types) {
   
   print(paste0("Updating player stat: ", each_stat))
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
   df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
   
@@ -35,6 +36,8 @@ for(each_stat in stat_types) {
     filter(Season_End_Year != latest_season)
   
   df <- bind_rows(df, new_dat)
+  
+  attr(df, "scrape_timestamp") <- scrape_time_utc
   
   saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
 }
@@ -48,6 +51,7 @@ for(each_stat in stat_types) {
 for(each_stat in stat_types) {
   
   print(paste0("Updating team stat: ", each_stat))
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
   df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
   
@@ -58,9 +62,11 @@ for(each_stat in stat_types) {
   
   df <- bind_rows(df, new_dat)
   
+  attr(df, "scrape_timestamp") <- scrape_time_utc
+  
   saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
 }
 
-scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
-saveRDS(scrape_time_utc, here("data", "fb_big5_advanced_season_stats", "scrape_time_big5_advanced_season_stats.rds"))
+# scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+# saveRDS(scrape_time_utc, here("data", "fb_big5_advanced_season_stats", "scrape_time_big5_advanced_season_stats.rds"))
 

@@ -32,6 +32,7 @@ countries_to_get <- latest_seasons %>%
 update_fb_match_results <- function(each_country) {
   
   print(paste0("Getting Country: ", each_country))
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
   # dat_url <- paste0("https://github.com/JaseZiv/worldfootballR_data/blob/master/data/match_results/", each_country, "_match_results.rds?raw=true")
   # 
@@ -42,8 +43,8 @@ update_fb_match_results <- function(each_country) {
   # we could scrape every leage for the most recent, but if the season has finished, what's the point?
   # The below logic will look to get any games where there are missing scores (we make the assumption that these are not yet played) 
   # and if the date of these games is earlier than the scraping date, then scrape the results
-  df2 <- existing_df %>% filter(Season_End_Year == max(existing_df$Season_End_Year))
-  date_not_collected <- df2 %>% filter(is.na(HomeGoals) & is.na(AwayGoals)) %>% arrange(Date) %>% pull(Date) %>% min()
+  # df2 <- existing_df %>% filter(Season_End_Year == max(existing_df$Season_End_Year))
+  # date_not_collected <- df2 %>% filter(is.na(HomeGoals) & is.na(AwayGoals)) %>% arrange(Date) %>% pull(Date) %>% min()
   
   # if(date_not_collected < Sys.Date()) {
     
@@ -68,7 +69,7 @@ update_fb_match_results <- function(each_country) {
           dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, .data$Date, .data$Time, as.numeric(.data$Wk)) %>% dplyr::distinct(.keep_all = T)
       }
       
-      # new_df_full$data_updated <- as.POSIXlt(Sys.time(), tz = "UTC")
+      attr(new_df_full, "scrape_timestamp") <- scrape_time_utc
       
       saveRDS(new_df_full, here("data", "match_results", paste0(each_country, "_match_results.rds")))
       
@@ -83,7 +84,7 @@ update_fb_match_results <- function(each_country) {
 # update data:
 countries_to_get %>% purrr::map(update_fb_match_results)
 
-scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
-saveRDS(scrape_time_utc, here("data", "match_results", "scrape_time_match_results.rds"))
+# scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+# saveRDS(scrape_time_utc, here("data", "match_results", "scrape_time_match_results.rds"))
 
 
