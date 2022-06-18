@@ -14,7 +14,8 @@ get_page <- ratelimitr::limit_rate(.get_page, ratelimitr::rate(1,3))
 .get_competitions <- function() {
   
   main_url <- "https://fbref.com"
-  comps_page <- get_page("https://fbref.com/en/comps/")
+  Sys.sleep(3)
+  comps_page <- xml2::read_html("https://fbref.com/en/comps/")
   
   
   tabs <- comps_page %>% html_nodes(".table_wrapper")
@@ -70,7 +71,8 @@ get_league_seasons_url <- function() {
   get_urls <- function(league_url) {
     # Sys.sleep(runif(1, min=4, max=10))
     print(glue::glue("Scraping season URLs from {league_url}"))
-    league_page <- get_page(league_url)
+    Sys.sleep(3)
+    league_page <- xml2::read_html(league_url)
     
     seasons <- league_page %>%
       rvest::html_nodes("th a") %>%
