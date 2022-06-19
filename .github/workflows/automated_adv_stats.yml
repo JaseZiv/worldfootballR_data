@@ -1,10 +1,12 @@
 
-name: Store match results
+name: Store advanced stats
 
-# Controls when the action will run - have set this to run at 14:30 every Sun, Mon, Tue, Sat. 
+# Controls when the action will run - have set this to run at: 
+# 02:15 on Tuesday, Thursday, and Sunday in 
+# January, February, March, April, May, August, September, October, November, and December. 
 on:
   schedule:
-    - cron: "0 14 * * 0,1,2,6"
+    - cron: "15 2 * 1,2,3,4,5,8,9,10,11,12 2,4,7"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

@@ -30,7 +30,7 @@ for(each_stat in stat_types) {
   
   df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
   
-  new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "player")
+  new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "player", time_pause = 5)
   
   df <- df %>% 
     filter(Season_End_Year != latest_season)
@@ -55,7 +55,7 @@ for(each_stat in stat_types) {
   
   df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
   
-  new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "team")
+  new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "team", time_pause = 5)
   
   df <- df %>% 
     filter(Season_End_Year != latest_season)
