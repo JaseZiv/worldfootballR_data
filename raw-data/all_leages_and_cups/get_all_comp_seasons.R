@@ -78,16 +78,35 @@ get_league_seasons_url <- function() {
       rvest::html_nodes("th a") %>%
       rvest::html_text()
     
-    season_end_year <- league_page %>%
-      rvest::html_nodes("th a") %>%
-      rvest::html_text() %>%
-      gsub(".*-", "", .)
-    
-    
-    seasons_urls <- league_page %>%
-      rvest::html_nodes("th a") %>%
-      rvest::html_attr("href") %>%
-      paste0(main_url, .)
+    # competition qualifiers (ie world cup qualification, regional competitions, etc) are handles differently
+    # on fbref so we need to get the data we need a bit differently - using an extra page load and regex to get the seasons
+    if(length(seasons) == 0) {
+      
+      seasons <- league_page %>% 
+        rvest::html_nodes(".content_grid .section_heading h2 a") %>% html_text() %>% 
+        gsub(" .*", "", .)
+      
+      season_end_year <- seasons %>%
+        gsub(".*-", "", .)
+      
+      seasons_urls <- league_page %>% 
+        rvest::html_nodes(".content_grid .section_heading h2 a") %>% rvest::html_attr("href") %>% 
+        paste0(main_url, .)
+      
+    } else {
+      
+      season_end_year <- league_page %>%
+        rvest::html_nodes("th a") %>%
+        rvest::html_text() %>%
+        gsub(".*-", "", .)
+      
+      
+      seasons_urls <- league_page %>%
+        rvest::html_nodes("th a") %>%
+        rvest::html_attr("href") %>%
+        paste0(main_url, .)
+      
+    }
     
     # use regex to construct fixtures_urls... this may cause some downstream issues as not all
     # season_urls have fixture URLs (individual matches not on FBref for some leagues historically)
@@ -109,7 +128,7 @@ get_league_seasons_url <- function() {
     purrr::map_df(get_urls) %>% 
     dplyr::left_join(competitions, ., by = c("comp_url" = "league_url")) %>% 
     janitor::clean_names() %>%
-    # want to keep the big five leagues combined, but not the individual leages (these would be duplicated if kept in)
+    # want to keep the big five leagues combined, but not the individual leagues (these would be duplicated if kept in)
     dplyr::mutate(filter_out = dplyr::case_when(
       str_detect(competition_type, "Big 5") & !str_detect(competition_name, "Big 5 ") ~ "Y",
       TRUE ~ "N"
