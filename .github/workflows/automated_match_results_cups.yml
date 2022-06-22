@@ -1,12 +1,12 @@
 
-name: Store match results
+name: Store International and Cups match results
 
 # Controls when the action will run - have set this to run at: 
 # 02:00 on Tuesday, Thursday, and Sunday in 
 # January, February, March, April, May, August, September, October, November, and December. 
 on:
   schedule:
-    - cron: "15 17 * 1-5,8-12 0,2,4"
+    - cron: "0 17 * * 0,2,4"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
@@ -24,11 +24,11 @@ jobs:
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
       - name: Package Installation
-        run: Rscript -e 'install.packages(c("tidyverse" ,"devtools", "dplyr", "stringr", "here"))'
+        run: Rscript -e 'install.packages(c("tidyverse" ,"devtools", "dplyr", "stringr", "here", "lubridate", "janitor"))'
       - name: worldfootballR Package Installation
         run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
-      - name: Update match results
-        run: Rscript -e 'source(here::here("R", "fb_match_results", "update_fb_match_results.R"), echo = TRUE)'
+      - name: Update cup match results
+        run: Rscript -e 'source(here::here("R", "fb_match_results_cups", "update_fb_cups_match_results.R"), echo = TRUE)'
       - name: Commit
         run: |
           git config --global user.name 'JaseZiv'
