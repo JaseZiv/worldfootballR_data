@@ -1,0 +1,39 @@
+---
+output: github_document
+---
+
+## Competition Names for `worldfootballR::load_match_comp_results()`
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+# options(tibble.print_min = 5, tibble.print_max = 10)
+```
+
+
+The below is a list of all the available competition names to pass to the `comp_name` value in the `worldfootballR::load_match_comp_results()` function:
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+library(dplyr)
+seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv", stringsAsFactors = F)
+
+# the below cups are one off matches so we don't need scores and fixtures for these:
+exclusion_cups <- c("UEFA Super Cup", "FA Community Shield", "Supercopa de España", "Trophée des Champions", "DFL-Supercup", "Supercoppa Italiana")
+
+latest_cup_seasons <- seasons %>%
+  # filtering out things that aren't domestic leagues:
+  filter(!stringr::str_detect(.data$competition_type, "Leagues"),
+         # and also the single match type cup games:
+         !.data$competition_name %in% exclusion_cups) %>% 
+  group_by(competition_name) %>% slice_max(season_end_year) %>% 
+  distinct() %>% 
+  select(competition_type,competition_name,country,gender,governing_body,first_season,last_season,tier)
+
+latest_cup_seasons %>% select(competition_name) %>% gt::gt()
+```
+
