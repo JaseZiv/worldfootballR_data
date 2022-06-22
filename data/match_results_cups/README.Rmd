@@ -5,16 +5,6 @@ output: github_document
 ## Competition Names for `worldfootballR::load_match_comp_results()`
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-# options(tibble.print_min = 5, tibble.print_max = 10)
-```
-
 
 The below is a list of all the available competition names to pass to the `comp_name` value in the `worldfootballR::load_match_comp_results()` function:
 
@@ -34,6 +24,6 @@ latest_cup_seasons <- seasons %>%
   distinct() %>% 
   select(competition_type,competition_name,country,gender,governing_body,first_season,last_season,tier)
 
-latest_cup_seasons %>% select(competition_name) %>% gt::gt()
+latest_cup_seasons %>% pull(competition_name)
 ```
 
