@@ -93,6 +93,15 @@ get_league_seasons_url <- function() {
         rvest::html_nodes(".content_grid .section_heading h2 a") %>% rvest::html_attr("href") %>% 
         paste0(main_url, .)
       
+      # If the length of the below is one, then the qualifications haven't yet completed (although there appears to be some records that don't follow this pattern - will address that in a later step).
+      # if two, they will have a list of teams that qualified
+      is_completed_length <- league_page %>% 
+        rvest::html_nodes(".section_content") %>% .[1] %>% 
+        rvest::html_nodes("strong") %>% 
+        rvest::html_text() %>% length()
+      
+      is_completed <- length(is_completed_length) > 1
+      
     } else {
       
       season_end_year <- league_page %>%
@@ -106,6 +115,9 @@ get_league_seasons_url <- function() {
         rvest::html_attr("href") %>%
         paste0(main_url, .)
       
+      winner <- league_page %>% rvest::html_nodes(xpath = '//*[@data-stat="champ"]') %>% rvest::html_text() %>% .[-1]
+      is_completed <- winner != ""
+      
     }
     
     # use regex to construct fixtures_urls... this may cause some downstream issues as not all
@@ -118,7 +130,7 @@ get_league_seasons_url <- function() {
     
     fixtures_url <- paste0(url_amend, to_keep)
     
-    all_league_seasons <- cbind(league_url, seasons, season_end_year, seasons_urls, fixtures_url) %>% data.frame()
+    all_league_seasons <- cbind(league_url, seasons, season_end_year, seasons_urls, fixtures_url, is_completed) %>% data.frame()
     
     
     return(all_league_seasons)
