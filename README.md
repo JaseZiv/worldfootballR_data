@@ -1,4 +1,4 @@
-# worldfootballR <img src="man/figures/logo.png" align="right" width="181" height="201"/>
+# worldfootballR_data <img src="man/figures/logo.png" align="right" width="181" height="201"/>
 
 <!-- badges: start -->
 ![run_scrapes](https://github.com/JaseZiv/worldfootballR_data/workflows/run_extracts/badge.svg)
