@@ -1,0 +1,38 @@
+
+name: Scrape understat shots
+
+# Controls when the action will run - have set this to run at: 
+# 02:00 on Tuesday, Thursday, and Sunday in 
+# January, February, March, April, May, August, September, October, November, and December. 
+on:
+  schedule:
+    - cron: "15 18 * 1-5,8-12 0,2,4"
+
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  update-match-results:
+    # The type of runner that the job will run on
+    runs-on: macOS-latest
+    # retrieve token
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+      - name: Package Installation
+        run: Rscript -e 'install.packages(c("tidyverse" ,"devtools", "dplyr", "stringr", "here"))'
+      - name: worldfootballR Package Installation
+        run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
+      - name: Update match results
+        run: Rscript -e 'source(here::here("R", "understat_league_shots", "update_understat_shots.R"), echo = TRUE)'
+      - name: Commit
+        run: |
+          git config --global user.name 'JaseZiv'
+          git config --global user.email 'jaseziv83@gmail.com'
+          git add .
+          git commit -m 'updating data' || echo "No changes to commit"
+          git push || echo "No changes to commit"
