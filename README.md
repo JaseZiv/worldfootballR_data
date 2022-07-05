@@ -39,8 +39,8 @@ Includes match results played for all domestic leagues available on the site, fo
 
 Includes match results played for all domestic cups and international matches available on the site, for all years match results are listed under the fixtures section of cups/comps
 
-* [Understat shot locations for the Big 5 leagues](https://github.com/JaseZiv/worldfootballR_data/tree/master/data/understat_shots)
+* [Understat shot locations for the Big 5 leagues and RFPL](https://github.com/JaseZiv/worldfootballR_data/tree/master/data/understat_shots)
 
-Shooting data and locations for the big 5 leagues since the 2014/15 seasons.
+Shooting data and locations for the big 5 leagues and the RFPL since the 2014/15 seasons.
 
 Shout out to [Mark Wilkins](https://twitter.com/biscuitchaser) for supplying the original data dump of the seasons for all big 5 leagues from 2014/15 to 2021/22. The data was originally [here](https://github.com/Markjwilkins/Understat)

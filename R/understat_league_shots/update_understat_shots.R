@@ -6,7 +6,7 @@ library(here)
 setwd(here("data", "understat_shots"))
 
 # valid league names for scraping data
-leagues <- c("EPL", "La_liga", "Bundesliga", "Serie_A", "Ligue_1")
+leagues <- c("EPL", "La_liga", "Bundesliga", "Serie_A", "Ligue_1", "RFPL")
 
 
 for(each_league in leagues) {
