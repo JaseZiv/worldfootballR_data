@@ -3,10 +3,10 @@ name: Scrape understat shots
 
 # Controls when the action will run - have set this to run at: 
 # 02:00 on Tuesday, Thursday, and Sunday in 
-# January, February, March, April, May, August, September, October, November, and December. 
+# January, February, March, April, May, July, August, September, October, November, and December. 
 on:
   schedule:
-    - cron: "15 18 * 1-5,8-12 0,2,4"
+    - cron: "15 18 * 1-5,7-12 0,2,4"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

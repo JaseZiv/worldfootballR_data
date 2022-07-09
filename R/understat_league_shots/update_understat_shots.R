@@ -21,20 +21,20 @@ for(each_league in leagues) {
     rvest::html_nodes("option")
   season <- season_element %>% rvest::html_attr("value") %>% as.numeric() %>% max(na.rm = T)
   
-  # also need to read in the existing shot dat file to see which games have not yet been collected:
+  # also need to read in the existing shot data file to see which games have not yet been collected:
   # to do this, we need to clean the valid league names to match the file structure
   league_name_clean <- janitor::make_clean_names(each_league)
   # then read in data
   f <- readRDS(paste0(league_name_clean, "_shot_data.rds"))
   
-  # also need to read in the match data to get all match IDs, to then compare wheich matches have been played (and will then have shot data)
+  # also need to read in the match data to get all match IDs, to then compare which matches have been played (and will then have shot data)
   match_data <- worldfootballR::understat_league_match_results(league = each_league, season_start_year = season)
   match_data <- match_data %>% filter(isResult == TRUE)
   
   # only want to keep those match IDs for which we don't have shot data for
   missing_ids <- match_data$match_id[!match_data$match_id %in% f$match_id]
   
-  # then, if there are any matches where we don;t already have shot data, go and get them
+  # then, if there are any matches where we don't already have shot data, go and get them
   if(length(missing_ids) > 0) {
     match_urls <- paste0("https://understat.com/match/", missing_ids)
     
