@@ -6,11 +6,21 @@ library(here)
 setwd(here("data", "understat_shots"))
 
 # valid league names for scraping data
-leagues <- c("EPL", "La_liga", "Bundesliga", "Serie_A", "Ligue_1", "RFPL")
+leagues <- c("EPL", "La liga", "Bundesliga", "Serie A", "Ligue 1", "RFPL")
+
+
 
 
 for(each_league in leagues) {
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+  
+  if(each_league == "La liga") {
+    each_league <- "La_liga"
+  } else if (each_league == "Serie A") {
+    each_league <- "Serie_A"
+  } else if (each_league == "Ligue 1") {
+    each_league <- "Ligue_1"
+  }
   
   # first we want to get the current season:
   main_url <- "https://understat.com/"
