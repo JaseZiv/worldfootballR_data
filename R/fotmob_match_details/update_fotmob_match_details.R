@@ -11,7 +11,6 @@ dir.create(subdata_dir, showWarnings = FALSE)
 
 matches_by_date <- file.path("data", "fotmob_matches_by_date", "matches_by_date.rds") |> readRDS()
 
-
 scrape_fotmob_match_details <- function(match_id, overwrite = FALSE) {
   path <- file.path(subdata_dir, sprintf("%s.rds", match_id))
   if(file.exists(path) & !overwrite) {
@@ -31,8 +30,10 @@ league_id_mapping <- c(
   "53" = "FRA",
   "54" = "GER",
   "55" = "ITA",
-  "87" = "ESP"
+  "87" = "ESP",
+  "130" = "USA"
 )
+other_league_ids <- as.character(c(50, 42, 44, 73))
 
 league_start_dates <- league_id_mapping |> 
   imap_dfr(
@@ -49,7 +50,12 @@ league_start_dates <- league_id_mapping |>
 league_start_date_mapping <- setNames(league_start_dates$date, league_start_dates$league_id)
 
 slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
-  first_date <- as.Date(league_start_date_mapping[[league_id]])
+  first_date <- if(league_id %in% other_league_ids) {
+    as.Date("2020-06-01")
+  } else {
+    as.Date(league_start_date_mapping[[league_id]])
+  }
+  
   path <- file.path(data_dir, sprintf("%s_match_details.rds", league_id))
   path_exists <- file.exists(path)
   if(isTRUE(path_exists)) {
@@ -66,17 +72,25 @@ slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
   
   if(nrow(league_matches_by_date) == 0) {
     message(sprintf("Not updating data for `league_id = %s`.", league_id))
-    return(match_details)
+    if(isTRUE(path_exists)) {
+      return(existing_match_details)
+    } else {
+      return(data.frame())
+    }
   }
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
   raw_match_details <- league_matches_by_date$match_id |> 
-    map_dfr(possibly_scrape_fotmob_match_details)
+    map_dfr(slowly_scrape_fotmob_match_details)
   
   if(nrow(raw_match_details) == 0) {
     message(sprintf("Not updating data for `league_id = %s`. Bad matches: %s", league_id, nrow(league_matches_by_date)))
-    return(match_details)
+    if(isTRUE(path_exists)) {
+      return(existing_match_details)
+    } else {
+      return(data.frame())
+    }
   }
   
   match_details <- raw_match_details |> 
@@ -96,5 +110,5 @@ slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
   match_details
 }
 
-names(league_id_mapping) |> 
+c(names(league_id_mapping), other_league_ids) |> 
   walk(slowly_scrape_fotmob_match_details_for_league)

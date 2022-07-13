@@ -2,6 +2,7 @@ library(worldfootballR)
 library(dplyr)
 library(tidyr)
 library(purrr)
+library(lubridate)
 library(janitor)
 
 data_dir <- file.path("data", "fotmob_matches_by_date")
@@ -19,8 +20,9 @@ if (isTRUE(path_exists)) {
   existing_matches_by_date <- readRDS(path)
   existing_dates <- existing_matches_by_date |> 
     distinct(date) |> 
-    pull(date)
-  dates <- setdiff(dates, existing_dates)
+    pull(date) |> 
+    ymd()
+  dates <- as.Date(setdiff(dates, existing_dates), origin = "1970-01-01")
 }
 
 scrape_fotmob_matches_on_date <- function(date, overwrite = FALSE) {
@@ -53,10 +55,22 @@ matches_by_date <- raw_matches_by_date |>
 
 if(isTRUE(path_exists)) {
   matches_by_date <- bind_rows(
-    matches_by_date |> filter(!(date %in% dates)),
+    existing_matches_by_date |> filter(!(date %in% dates)),
     matches_by_date
   ) |> 
     distinct()
 }
+
+popular_league_ids <- c(50, 42, 44, 73, 47, 54, 87, 53, 130, 55)
+popular_matches_by_date <- matches_by_date |> 
+  filter(primary_id %in% popular_league_ids)
+
+split(popular_matches_by_date, popular_matches_by_date$primary_id) |> 
+  iwalk(
+    ~{
+      attr(.x, "scrape_timestamp") <- scrape_time_utc
+      saveRDS(.x, file.path(data_dir, sprintf("%s_matches_by_date.rds", .y)))
+    }
+  )
 attr(matches_by_date, "scrape_timestamp") <- scrape_time_utc
 saveRDS(matches_by_date, path)
