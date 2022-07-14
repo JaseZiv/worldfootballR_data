@@ -81,10 +81,10 @@ slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
-  raw_match_details <- league_matches_by_date$match_id |> 
+  match_details <- league_matches_by_date$match_id |> 
     map_dfr(slowly_scrape_fotmob_match_details)
   
-  if(nrow(raw_match_details) == 0) {
+  if(nrow(match_details) == 0) {
     message(sprintf("Not updating data for `league_id = %s`. Bad matches: %s", league_id, nrow(league_matches_by_date)))
     if(isTRUE(path_exists)) {
       return(existing_match_details)
@@ -92,11 +92,6 @@ slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
       return(data.frame())
     }
   }
-  
-  match_details <- raw_match_details |> 
-    unnest(shots) |> 
-    unnest_wider(on_goal_shot, names_sep = "_") |> 
-    clean_names()
   
   if(isTRUE(path_exists)) {
     match_details <- bind_rows(

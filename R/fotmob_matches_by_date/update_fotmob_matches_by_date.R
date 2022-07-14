@@ -39,19 +39,11 @@ scrape_fotmob_matches_on_date <- function(date, overwrite = FALSE) {
 possibly_scrape_fotmob_matches_on_date <- possibly(scrape_fotmob_matches_on_date, otherwise = tibble(), quiet = FALSE)
 slowly_scrape_fotmob_matches_on_date <- slowly(possibly_scrape_fotmob_matches_on_date, quiet = TRUE)
 
-raw_matches_by_date <- setNames(dates, dates) |> 
+matches_by_date <- setNames(dates, dates) |> 
   map_dfr(
     slowly_scrape_fotmob_matches_on_date,
     .id = "date"
   )
-
-matches_by_date <- raw_matches_by_date |>   
-  rename(match = matches) |> 
-  unnest(match, names_sep = "_") |> 
-  rename(home = match_home, away = match_away) |> 
-  unnest(c(home, away, match_status), names_sep = "_") |> 
-  unnest(c(match_status_reason)) |> 
-  clean_names()
 
 if(isTRUE(path_exists)) {
   matches_by_date <- bind_rows(
