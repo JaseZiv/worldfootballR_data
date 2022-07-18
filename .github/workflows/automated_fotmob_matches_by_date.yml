@@ -1,6 +1,6 @@
 name: Scrape fotmob matches by date
 
-# At 23:01 everyday.
+# At 23:01 daily.
 on:
   schedule:
     - cron: "1 23 * * *"
