@@ -35,7 +35,8 @@ for(each_league in leagues) {
   # to do this, we need to clean the valid league names to match the file structure
   league_name_clean <- janitor::make_clean_names(each_league)
   # then read in data
-  f <- readRDS(paste0(league_name_clean, "_shot_data.rds"))
+  f <- readRDS(paste0(league_name_clean, "_shot_data.rds")) %>% 
+    mutate(minute = as.numeric(minute))
   
   # also need to read in the match data to get all match IDs, to then compare which matches have been played (and will then have shot data)
   match_data <- tryCatch(worldfootballR::understat_league_match_results(league = each_league, season_start_year = season), error = function(e) data.frame())
