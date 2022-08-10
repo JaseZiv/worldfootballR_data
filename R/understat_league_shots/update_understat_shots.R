@@ -37,6 +37,14 @@ for(each_league in leagues) {
   # then read in data
   f <- readRDS(paste0(league_name_clean, "_shot_data.rds")) %>% 
     mutate(minute = as.numeric(minute))
+  # need to manually coerce columns to numeric as of the start of 22/23 season to match old data
+  f <- f %>% 
+    mutate(
+      id = as.numeric(id),
+      player_id = as.numeric(player_id),
+      season = as.numeric(season),
+      match_id = as.numeric(match_id)
+    )
   
   # also need to read in the match data to get all match IDs, to then compare which matches have been played (and will then have shot data)
   match_data <- tryCatch(worldfootballR::understat_league_match_results(league = each_league, season_start_year = season), error = function(e) data.frame())
@@ -54,6 +62,14 @@ for(each_league in leagues) {
     match_urls <- paste0("https://understat.com/match/", missing_ids)
     
     shots <- match_urls %>% purrr::map_df(worldfootballR::understat_match_shots)
+    # need to manually coerce columns to numeric as of the start of 22/23 season to match old data
+    shots <- shots %>% 
+      mutate(
+        id = as.numeric(id),
+        player_id = as.numeric(player_id),
+        season = as.numeric(season),
+        match_id = as.numeric(match_id)
+      )
     
     # column names were slightly different prior to the 2021/2022 season - we want to keep these consistent
     if(any(grepl("last_action", names(shots)))) {
