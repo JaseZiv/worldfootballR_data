@@ -19,6 +19,11 @@ Once these files have been manually fixed, run `create_final_data.R` and the fin
 
 The project also writes the mapped data to a gogglesheet, found [here](https://docs.google.com/spreadsheets/d/1GjjS9IRp6FVzVX5QyfmttMk8eYBtIzuZ_YIM0VWg8OY/edit#gid=61874932).
 
+
+### Update (2022-08-11) Update Player Positions
+
+For players that were mapped originally, some of these may have changed positions since the initial map. To get current TM positions, run the file names `update_player_positions.R`.
+
 ## Contributing
 
 If anyone wants to contribute mapped players for different leagues, feel free to get in touch with me on Twitter [here](https://twitter.com/jaseziv), create an issue in [`worldfootballR`](https://github.com/JaseZiv/worldfootballR) or email me on `jaseziv83@gmail.com`.
