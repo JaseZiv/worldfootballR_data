@@ -22,7 +22,9 @@ countries_to_get <- latest_seasons %>%
   dplyr::filter(stringr::str_detect(.data$competition_type, "Leagues"),
                 tier != "",
                 !is.na(.data$country)) %>% 
-  filter(!is.na(country), country != "") %>% pull(country) %>% unique()
+  filter(!is.na(country), country != "") %>%
+  # also want to keep only seasons that are not yet completed
+  filter(!is_completed) %>% pull(country) %>% unique()
 
 
 #=======================================================================================
