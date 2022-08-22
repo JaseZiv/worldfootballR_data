@@ -1,21 +1,29 @@
 library(tidyverse)
 library(rvest)
 
-# thanks to TanHo for the below reading function
-.get_page <- function(url){
-  httr::GET(url,httr::user_agent("worldfootballR data package <https://github.com/JaseZiv/worldfootballR>"))  %>%  
-    httr::content(as = "text")  %>%  
-    rvest::read_html()
-}
+# # thanks to TanHo for the below reading function
+# .get_page <- function(url){
+#   httr::GET(url,httr::user_agent("worldfootballR data package <https://github.com/JaseZiv/worldfootballR>"))  %>%  
+#     httr::content(as = "text")  %>%  
+#     rvest::read_html()
+# }
+# 
+# get_page <- ratelimitr::limit_rate(.get_page, ratelimitr::rate(1,3))
 
-get_page <- ratelimitr::limit_rate(.get_page, ratelimitr::rate(1,3))
+
+# new function in worldfootballR to allow for a user agent to be specified before loading
+.load_page <- function(page_url) {
+  ua <- httr::user_agent("RStudio Desktop (2022.7.1.554); R (4.1.1 x86_64-w64-mingw32 x86_64 mingw32)")
+  session <- rvest::session(url = page_url, ua)
+  xml2::read_html(session)
+}
 
 
 .get_competitions <- function() {
   
   main_url <- "https://fbref.com"
   Sys.sleep(3)
-  comps_page <- xml2::read_html("https://fbref.com/en/comps/")
+  comps_page <- .load_page("https://fbref.com/en/comps/")
   
   
   tabs <- comps_page %>% html_nodes(".table_wrapper")
@@ -72,7 +80,7 @@ get_league_seasons_url <- function() {
     # Sys.sleep(runif(1, min=4, max=10))
     print(glue::glue("Scraping season URLs from {league_url}"))
     Sys.sleep(3)
-    league_page <- xml2::read_html(league_url)
+    league_page <- .load_page(league_url)
     
     seasons <- league_page %>%
       rvest::html_nodes("th a") %>%
