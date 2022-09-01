@@ -5,22 +5,16 @@ on:
   schedule:
     - cron: "31 23 * * *"
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  update-match-results:
-    # The type of runner that the job will run on
+  update-fotmob-match-details:
     runs-on: macOS-latest
-    # retrieve token
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: r-lib/actions/setup-r@master
       - name: Package Installation
-        run: Rscript -e 'install.packages(c("dplyr", "devtools", "purrr", "tidyr", "janitor", "readr"))'
+        run: Rscript -e 'install.packages(c("devtools", "dplyr", "purrr", "tidyr", "janitor", "readr"))'
       - name: worldfootballR Package Installation
         run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
       - name: Update match results
@@ -30,5 +24,5 @@ jobs:
           git config --global user.name 'JaseZiv'
           git config --global user.email 'jaseziv83@gmail.com'
           git add .
-          git commit -m 'updating data' || echo "No changes to commit"
+          git commit -m 'updating fotmob match details' || echo "No changes to commit"
           git push || echo "No changes to commit"

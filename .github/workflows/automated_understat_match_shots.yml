@@ -1,0 +1,28 @@
+name: Scrape understat match shots
+
+on:
+  schedule:
+    - cron: "25 18 * 1-5,7-12 0,2,4"
+
+jobs:
+  update-understat-match-shots:
+    runs-on: macOS-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - uses: r-lib/actions/setup-r@master
+      - name: Package Installation
+        run: Rscript -e 'install.packages(c("devtools", "dplyr", "tidyr", "readr", "stringr", "stringi", "rvest", "purrr", "xml2", "janitor"))'
+      - name: worldfootballR Package Installation
+        run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
+      - name: Update match results
+        run: Rscript -e 'source(file.path("R", "understat_match_shots", "update_understat_match_shots.R"), echo = TRUE)'
+      - name: Commit
+        run: |
+          git config --global user.name 'JaseZiv'
+          git config --global user.email 'jaseziv83@gmail.com'
+          git add .
+          git commit -m 'updating understat match shots' || echo "No changes to commit"
+          git push || echo "No changes to commit"
