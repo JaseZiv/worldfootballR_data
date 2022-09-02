@@ -2078,3 +2078,5 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-08-31,ITA,55,55,Serie A,3919118,55,31.08.2022 18:30,8600,1,Udinese,Udinese,,8535,0,Fiorentina,Fiorentina,,,6,4,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1661945400000,,9,100,FALSE,,,,
 2022-08-31,ITA,55,55,Serie A,3919113,55,31.08.2022 20:45,9885,2,Juventus,Juventus,,9881,0,Spezia,Spezia,,,6,4,TRUE,TRUE,FALSE,2 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1661953500000,,9,100,FALSE,,,,
 2022-08-31,ITA,55,55,Serie A,3919114,55,31.08.2022 20:45,9875,1,Napoli,Napoli,,9888,1,Lecce,Lecce,,,6,4,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1661953500000,,9,100,FALSE,,,,
+2022-09-01,ITA,55,55,Serie A,3919109,55,01.09.2022 20:45,8524,3,Atalanta,Atalanta,,9804,1,Torino,Torino,,,6,4,TRUE,TRUE,FALSE,3 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662039900000,,9,100,FALSE,,,,
+2022-09-01,ITA,55,55,Serie A,3919110,55,01.09.2022 20:45,9857,1,Bologna,Bologna,,6480,1,Salernitana,Salernitana,,,6,4,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662039900000,,9,100,FALSE,,,,
