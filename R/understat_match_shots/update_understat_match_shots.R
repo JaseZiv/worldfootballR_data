@@ -167,7 +167,7 @@ scrape_league_shots <- function(league, overwrite = FALSE) {
     pull(match_id) |> 
     map_dfr(possibly_get_shots)
 
-  if (nrow(completed_matches) == 0) {
+  if (nrow(shots) == 0) {
     message(sprintf("Not updating data for `league = %s`. Bad matches: %s", league, nrow(shots)))
     if (isTRUE(path_exists)) {
       return(existing_shots)
