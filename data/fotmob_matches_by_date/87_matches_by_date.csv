@@ -2057,3 +2057,7 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-03,ESP,87,87,LaLiga,3917962,87,03.09.2022 16:15,8633,2,Real Madrid,Real Madrid,,8603,1,Real Betis,Real Betis,,,6,4,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662189300000,,10,100,FALSE,,,,
 2022-09-03,ESP,87,87,LaLiga,3917960,87,03.09.2022 18:30,8560,1,Real Sociedad,Real Sociedad,,9906,1,Atletico Madrid,Atletico Madrid,,,6,4,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662197400000,,10,100,FALSE,,,,
 2022-09-03,ESP,87,87,LaLiga,3917961,87,03.09.2022 21:00,8302,0,Sevilla,Sevilla,,8634,3,Barcelona,Barcelona,,,6,4,TRUE,TRUE,FALSE,0 - 3,Yesterday,Yesterday,FT,Full-Time,,,,1662206400000,,10,100,FALSE,,,,
+2022-09-04,ESP,87,87,LaLiga,3917959,87,04.09.2022 14:00,8371,2,Osasuna,Osasuna,,8370,1,Rayo Vallecano,Rayo Vallecano,,,6,4,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662278400000,,10,100,FALSE,,,,
+2022-09-04,ESP,87,87,LaLiga,3917958,87,04.09.2022 16:15,8315,0,Athletic Club,Athletic Club,,8558,1,Espanyol,Espanyol,,,6,4,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662286500000,,10,100,FALSE,,,,
+2022-09-04,ESP,87,87,LaLiga,3917963,87,04.09.2022 18:30,10205,4,Villarreal,Villarreal,,10268,0,Elche,Elche,,,6,4,TRUE,TRUE,FALSE,4 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662294600000,,10,100,FALSE,,,,
+2022-09-04,ESP,87,87,LaLiga,3917964,87,04.09.2022 21:00,10267,5,Valencia,Valencia,,8305,1,Getafe,Getafe,,,6,4,TRUE,TRUE,FALSE,5 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662303600000,,10,100,FALSE,,,,
