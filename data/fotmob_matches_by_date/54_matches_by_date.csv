@@ -1641,3 +1641,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-03,GER,54,54,Bundesliga,3903584,54,03.09.2022 18:30,9810,4,Frankfurt,Eintracht Frankfurt,,178475,0,RB Leipzig,RB Leipzig,,,6,5,TRUE,TRUE,FALSE,4 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662197400000,,20,100,FALSE,,,,
 2022-09-04,GER,54,54,Bundesliga,3903587,54,04.09.2022 15:30,8406,0,Augsburg,FC Augsburg,,8177,2,Hertha BSC,Hertha BSC,,,6,5,TRUE,TRUE,FALSE,0 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1662283800000,,20,100,FALSE,,,,
 2022-09-04,GER,54,54,Bundesliga,3903583,54,04.09.2022 17:30,9788,0,M'gladbach,Borussia M'Gladbach,,9905,1,Mainz,Mainz 05,,,6,5,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662291000000,,20,100,FALSE,,,,
+2022-09-09,GER,54,54,Bundesliga,3903597,54,09.09.2022 20:30,8697,0,Werder Bremen,Werder Bremen,,8406,1,Augsburg,FC Augsburg,,,6,6,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662733800000,,20,100,FALSE,,,,

@@ -2062,3 +2062,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-04,ESP,87,87,LaLiga,3917963,87,04.09.2022 18:30,10205,4,Villarreal,Villarreal,,10268,0,Elche,Elche,,,6,4,TRUE,TRUE,FALSE,4 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662294600000,,10,100,FALSE,,,,
 2022-09-04,ESP,87,87,LaLiga,3917964,87,04.09.2022 21:00,10267,5,Valencia,Valencia,,8305,1,Getafe,Getafe,,,6,4,TRUE,TRUE,FALSE,5 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662303600000,,10,100,FALSE,,,,
 2022-09-05,ESP,87,87,LaLiga,3917966,87,05.09.2022 21:00,10281,1,Real Valladolid,Real Valladolid,,9865,0,Almeria,Almeria,,,6,4,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662386400000,,10,100,FALSE,,,,
+2022-09-09,ESP,87,87,LaLiga,3917974,87,09.09.2022 21:00,7732,2,Girona,Girona,,10281,1,Real Valladolid,Real Valladolid,,,6,5,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662735600000,,10,100,FALSE,,,,
