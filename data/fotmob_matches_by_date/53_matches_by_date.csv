@@ -1970,3 +1970,5 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-04,FRA,53,53,Ligue 1,3904495,53,04.09.2022 20:45,9831,0,Nice,Nice,,9829,1,Monaco,Monaco,,,6,6,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662302700000,,10,100,FALSE,,,,
 2022-09-07,FRA,53,53,Ligue 1,3904402,53,07.09.2022 19:00,8689,3,Lorient,Lorient,,9748,1,Lyon,Lyon,,,6,2,TRUE,TRUE,FALSE,3 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662544800000,,10,100,FALSE,,,,
 2022-09-09,FRA,53,53,Ligue 1,3904506,53,09.09.2022 21:00,8588,1,Lens,Lens,,10242,0,Troyes,Troyes,,,6,7,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662735600000,,10,100,FALSE,,,,
+2022-09-10,FRA,53,53,Ligue 1,3904505,53,10.09.2022 17:00,9847,1,PSG,Paris Saint-Germain,,8521,0,Brest,Brest,,,6,7,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1662804000000,,10,100,FALSE,,,,
+2022-09-10,FRA,53,53,Ligue 1,3904504,53,10.09.2022 21:00,8592,2,Marseille,Marseille,,8639,1,Lille,Lille,,,6,7,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1662818400000,,10,100,FALSE,,,,
