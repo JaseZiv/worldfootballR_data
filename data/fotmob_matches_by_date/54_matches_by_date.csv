@@ -1659,3 +1659,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-18,GER,54,54,Bundesliga,3903600,54,18.09.2022 15:30,8149,2,Union Berlin,Union Berlin,,8721,0,Wolfsburg,Wolfsburg,,,6,7,TRUE,TRUE,FALSE,2 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1663493400000,,20,100,FALSE,,,,
 2022-09-18,GER,54,54,Bundesliga,3903604,54,18.09.2022 17:30,9911,1,VfL Bochum,VfL Bochum,,8722,1,Köln,1. FC Köln,,,6,7,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1663500600000,,20,100,FALSE,,,,
 2022-09-18,GER,54,54,Bundesliga,3903602,54,18.09.2022 19:30,8226,0,Hoffenheim,TSG Hoffenheim,,8358,0,Freiburg,SC Freiburg,,,6,7,TRUE,TRUE,FALSE,0 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1663507800000,,20,100,FALSE,,,,
+2022-09-30,GER,54,54,Bundesliga,3903607,54,30.09.2022 20:30,9823,4,Bayern München,Bayern München,,8178,0,Leverkusen,Bayer Leverkusen,,,6,8,TRUE,TRUE,FALSE,4 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1664544600000,,20,100,FALSE,,,,
