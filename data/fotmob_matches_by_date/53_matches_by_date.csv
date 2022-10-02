@@ -1990,3 +1990,5 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-09-18,FRA,53,53,Ligue 1,3904512,53,18.09.2022 17:05,9830,0,Nantes,Nantes,,8588,0,Lens,Lens,,,6,8,TRUE,TRUE,FALSE,0 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1663499100000,,10,100,FALSE,,,,
 2022-09-18,FRA,53,53,Ligue 1,3904516,53,18.09.2022 20:45,9748,0,Lyon,Lyon,,9847,1,PSG,Paris Saint-Germain,,,6,8,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1663512300000,,10,100,FALSE,,,,
 2022-09-30,FRA,53,53,Ligue 1,3904574,53,30.09.2022 21:00,8121,0,Angers,Angers,,8592,3,Marseille,Marseille,,,6,9,TRUE,TRUE,FALSE,0 - 3,Yesterday,Yesterday,FT,Full-Time,,,,1664546400000,,10,100,FALSE,,,,
+2022-10-01,FRA,53,53,Ligue 1,3904578,53,01.10.2022 17:00,9848,1,Strasbourg,Strasbourg,,9851,3,Rennes,Rennes,,,6,9,TRUE,TRUE,FALSE,1 - 3,Yesterday,Yesterday,FT,Full-Time,,,,1664611200000,,10,100,FALSE,,,,
+2022-10-01,FRA,53,53,Ligue 1,3904576,53,01.10.2022 21:00,9847,2,PSG,Paris Saint-Germain,,9831,1,Nice,Nice,,,6,9,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1664625600000,,10,100,FALSE,,,,
