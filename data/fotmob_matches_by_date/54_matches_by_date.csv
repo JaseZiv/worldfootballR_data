@@ -1668,3 +1668,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-10-01,GER,54,54,Bundesliga,3903615,54,01.10.2022 18:30,8697,5,Werder Bremen,Werder Bremen,,9788,1,M'gladbach,Borussia M'Gladbach,,,6,8,TRUE,TRUE,FALSE,5 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1664616600000,,20,100,FALSE,,,,
 2022-10-02,GER,54,54,Bundesliga,3903613,54,02.10.2022 15:35,8177,1,Hertha BSC,Hertha BSC,,8226,1,Hoffenheim,TSG Hoffenheim,,,6,8,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1664703300000,,20,100,FALSE,,,,
 2022-10-02,GER,54,54,Bundesliga,3903614,54,02.10.2022 17:30,10189,2,Schalke 04,Schalke 04,,8406,3,Augsburg,FC Augsburg,,,6,8,TRUE,TRUE,FALSE,2 - 3,Yesterday,Yesterday,FT,Full-Time,,,,1664710200000,,20,100,FALSE,,,,
+2022-10-07,GER,54,54,Bundesliga,3903619,54,07.10.2022 20:30,8226,1,Hoffenheim,TSG Hoffenheim,,8697,2,Werder Bremen,Werder Bremen,,,6,9,TRUE,TRUE,FALSE,1 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665142200000,,20,100,FALSE,,,,
