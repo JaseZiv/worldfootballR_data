@@ -2101,3 +2101,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-10-09,ESP,87,87,LaLiga,3918002,87,09.10.2022 16:15,8385,2,Cadiz,Cadiz,,8558,2,Espanyol,Espanyol,,,6,8,TRUE,TRUE,FALSE,2 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665299700000,,10,100,FALSE,,,,
 2022-10-09,ESP,87,87,LaLiga,3918004,87,09.10.2022 18:30,8560,1,Real Sociedad,Real Sociedad,,10205,0,Villarreal,Villarreal,,,6,8,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1665307800000,,10,100,FALSE,,,,
 2022-10-09,ESP,87,87,LaLiga,3917999,87,09.10.2022 21:00,8634,1,Barcelona,Barcelona,,9910,0,Celta Vigo,Celta Vigo,,,6,8,TRUE,TRUE,FALSE,1 - 0,Yesterday,Yesterday,FT,Full-Time,,,,1665316800000,,10,100,FALSE,,,,
+2022-10-10,ESP,87,87,LaLiga,3918000,87,10.10.2022 21:30,10268,1,Elche,Elche,,8661,1,Mallorca,Mallorca,,,6,8,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1665415800000,,10,100,FALSE,,,,

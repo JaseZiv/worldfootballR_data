@@ -2129,3 +2129,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-10-09,ITA,55,55,Serie A,3919178,55,09.10.2022 15:00,8600,2,Udinese,Udinese,,8524,2,Atalanta,Atalanta,,,6,9,TRUE,TRUE,FALSE,2 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665295200000,,9,100,FALSE,,,,
 2022-10-09,ITA,55,55,Serie A,3919170,55,09.10.2022 18:00,7801,1,Cremonese,Cremonese,,9875,4,Napoli,Napoli,,,6,9,TRUE,TRUE,FALSE,1 - 4,Yesterday,Yesterday,FT,Full-Time,,,,1665306000000,,9,100,FALSE,,,,
 2022-10-09,ITA,55,55,Serie A,3919174,55,09.10.2022 20:45,8686,2,Roma,Roma,,9888,1,Lecce,Lecce,,,6,9,TRUE,TRUE,FALSE,2 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1665315900000,,9,100,FALSE,,,,
+2022-10-10,ITA,55,55,Serie A,3919171,55,10.10.2022 20:45,8535,0,Fiorentina,Fiorentina,,8543,4,Lazio,Lazio,,,6,9,TRUE,TRUE,FALSE,0 - 4,Yesterday,Yesterday,FT,Full-Time,,,,1665413100000,,9,100,FALSE,,,,
