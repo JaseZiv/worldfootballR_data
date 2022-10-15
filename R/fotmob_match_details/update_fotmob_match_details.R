@@ -6,10 +6,6 @@ library(janitor)
 library(readr)
 
 source("R/piggyback.R")
-
-data_dir <- file.path("data", "fotmob_match_details")
-dir.create(data_dir, showWarnings = FALSE)
-
 matches_by_date <- read_worldfootballr_rds("matches_by_date", tag = "fotmob_matches_by_date")
 
 scrape_fotmob_match_details <- function(match_id, overwrite = FALSE) {
@@ -83,11 +79,6 @@ scrape_fotmob_match_details_for_league <- function(league_id) {
   )
   
   attr(match_details, "scrape_timestamp") <- scrape_time_utc
-  ## TODO: Remove write_rds/csv2 lines
-  rds_path <- file.path(data_dir, sprintf("%s_match_details.rds", league_id))
-  csv_path <- file.path(data_dir, sprintf("%s_match_details.csv", league_id))
-  write_rds(match_details, rds_path)
-  write_csv2(match_details, csv_path)
   write_worldfootballr_rds_and_csv(
     x = match_details,
     name = sprintf("%s_match_details", league_id),
