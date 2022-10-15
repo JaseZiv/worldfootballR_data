@@ -2136,3 +2136,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-10-09,ENG,47,47,Premier League,3901022,47,09.10.2022 17:30,9825,3,Arsenal,Arsenal,,8650,2,Liverpool,Liverpool,,,6,10,TRUE,TRUE,FALSE,3 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665304200000,,30,101,FALSE,,,,
 2022-10-09,ENG,47,47,Premier League,3901027,47,09.10.2022 20:00,8668,1,Everton,Everton,,10260,2,Man United,Manchester United,,,6,10,TRUE,TRUE,FALSE,1 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665313200000,,30,101,FALSE,,,,
 2022-10-10,ENG,47,47,Premier League,3901030,47,10.10.2022 21:00,10203,1,Nottm Forest,Nottingham Forest,,10252,1,Aston Villa,Aston Villa,,,6,10,TRUE,TRUE,FALSE,1 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1665414000000,,30,101,FALSE,,,,
+2022-10-14,ENG,47,47,Premier League,3901033,47,14.10.2022 21:00,9937,2,Brentford,Brentford,,10204,0,Brighton,Brighton & Hove Albion,,,6,11,TRUE,TRUE,FALSE,2 - 0,Yesterday,Yesterday,,,,,,1665756000000,,30,101,FALSE,,,,

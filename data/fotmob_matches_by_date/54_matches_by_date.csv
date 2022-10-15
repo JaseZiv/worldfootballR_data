@@ -1677,3 +1677,4 @@ date,ccode,id,primary_id,name,match_id,match_league_id,match_time,home_id,home_s
 2022-10-09,GER,54,54,Bundesliga,3903620,54,09.10.2022 15:30,9788,5,M'gladbach,Borussia M'Gladbach,,8722,2,Köln,1. FC Köln,,,6,9,TRUE,TRUE,FALSE,5 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665297000000,,20,100,FALSE,,,,
 2022-10-09,GER,54,54,Bundesliga,3903624,54,09.10.2022 17:30,8177,2,Hertha BSC,Hertha BSC,,8358,2,Freiburg,SC Freiburg,,,6,9,TRUE,TRUE,FALSE,2 - 2,Yesterday,Yesterday,FT,Full-Time,,,,1665304200000,,20,100,FALSE,,,,
 2022-10-09,GER,54,54,Bundesliga,3903623,54,09.10.2022 19:30,10269,0,VfB Stuttgart,VfB Stuttgart,,8149,1,Union Berlin,Union Berlin,,,6,9,TRUE,TRUE,FALSE,0 - 1,Yesterday,Yesterday,FT,Full-Time,,,,1665311400000,,20,100,FALSE,,,,
+2022-10-14,GER,54,54,Bundesliga,3903632,54,14.10.2022 20:30,10189,0,Schalke 04,Schalke 04,,8226,3,Hoffenheim,TSG Hoffenheim,,,6,10,TRUE,TRUE,FALSE,0 - 3,Yesterday,Yesterday,,,,,,1665754200000,,20,100,FALSE,,,,
