@@ -6,6 +6,8 @@ library(lubridate)
 library(janitor)
 library(readr)
 
+source("R/piggyback.R")
+
 data_dir <- file.path("data", "fotmob_matches_by_date")
 subdata_dir <- file.path(data_dir, "dates")
 dir.create(data_dir, showWarnings = FALSE)
@@ -63,10 +65,22 @@ split(popular_matches_by_date, popular_matches_by_date$primary_id) |>
   iwalk(
     ~{
       attr(.x, "scrape_timestamp") <- scrape_time_utc
+      ## TODO: Remove write_rds/csv2 lines
       write_rds(.x, file.path(data_dir, sprintf("%s_matches_by_date.rds", .y)))
-      write_csv(.x, file.path(data_dir, sprintf("%s_matches_by_date.csv", .y)), na = "")
+      write_csv2(.x, file.path(data_dir, sprintf("%s_matches_by_date.csv", .y)))
+      write_worldfootballr_rds_and_csv(
+        x = .x,
+        name = sprintf("%s_matches_by_date", .y),
+        tag = "fotmob_matches_by_date"
+      )
     }
   )
+
 attr(matches_by_date, "scrape_timestamp") <- scrape_time_utc
+## TODO: Remove write_rds/csv2 lines
 write_rds(matches_by_date, rds_path)
 write_csv(matches_by_date, csv_path, na = "")
+write_worldfootballr_rds_and_csv(
+  matches_by_date,
+  tag = "fotmob_matches_by_date"
+)
