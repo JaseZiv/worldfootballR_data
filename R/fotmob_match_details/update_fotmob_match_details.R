@@ -87,7 +87,7 @@ scrape_fotmob_match_details_for_league <- function(league_id) {
   rds_path <- file.path(data_dir, sprintf("%s_match_details.rds", league_id))
   csv_path <- file.path(data_dir, sprintf("%s_match_details.csv", league_id))
   write_rds(match_details, rds_path)
-  write_csv(match_details, csv_path, na = "")
+  write_csv2(match_details, csv_path)
   write_worldfootballr_rds_and_csv(
     x = match_details,
     name = sprintf("%s_match_details", league_id),
