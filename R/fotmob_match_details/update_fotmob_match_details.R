@@ -5,27 +5,17 @@ library(tidyr)
 library(janitor)
 library(readr)
 
-data_dir <- file.path("data", "fotmob_match_details")
-subdata_dir <- file.path(data_dir, "matches")
-dir.create(data_dir, showWarnings = FALSE)
-dir.create(subdata_dir, showWarnings = FALSE)
+source("R/piggyback.R")
 
-matches_by_date <- file.path("data", "fotmob_matches_by_date", "matches_by_date.rds") |> 
-  read_rds()
+data_dir <- file.path("data", "fotmob_match_details")
+dir.create(data_dir, showWarnings = FALSE)
+
+matches_by_date <- read_worldfootballr_rds("matches_by_date", tag = "fotmob_matches_by_date")
 
 scrape_fotmob_match_details <- function(match_id, overwrite = FALSE) {
-  rds_path <- file.path(subdata_dir, sprintf("%s.rds", match_id))
-  csv_path <- file.path(subdata_dir, sprintf("%s.csv", match_id))
-  if (file.exists(rds_path) & !overwrite) {
-    message(sprintf("Returning pre-saved data for %s.", match_id))
-    return(read_rds(rds_path))
-  }
   Sys.sleep(1)
   message(sprintf("Scraping matches for %s.", match_id))
-  match_details <- fotmob_get_match_details(match_id)
-  write_rds(match_details, rds_path)
-  write_csv(match_details, csv_path, na = "")
-  match_details
+  fotmob_get_match_details(match_id)
 }
 possibly_scrape_fotmob_match_details <- possibly(scrape_fotmob_match_details, otherwise = tibble(), quiet = FALSE)
 
@@ -37,7 +27,7 @@ league_id_mapping <- c(
   "87" = "ESP",
   "130" = "USA"
 )
-other_league_ids <- as.character(c(50, 42, 44, 73))
+other_league_ids <- as.character(c(50, 42, 73))
 
 league_start_dates <- league_id_mapping |> 
   imap_dfr(
@@ -53,62 +43,58 @@ league_start_dates <- league_id_mapping |>
   )
 league_start_date_mapping <- setNames(league_start_dates$date, league_start_dates$league_id)
 
-slowly_scrape_fotmob_match_details_for_league <- function(league_id) {
+scrape_fotmob_match_details_for_league <- function(league_id) {
   first_date <- if (league_id %in% other_league_ids) {
     as.Date("2020-06-01")
   } else {
     as.Date(league_start_date_mapping[[league_id]])
   }
   
-  rds_path <- file.path(data_dir, sprintf("%s_match_details.rds", league_id))
-  path_exists <- file.exists(rds_path)
-  csv_path <- file.path(data_dir, sprintf("%s_match_details.csv", league_id))
-  if (isTRUE(path_exists)) {
-    existing_match_details <- read_rds(rds_path)
-    existing_match_ids <- unique(existing_match_details$match_id)
-    matches_by_date <- matches_by_date |> 
-      filter(!(match_id %in% existing_match_ids))
-  }
-
-  league_matches_by_date <- matches_by_date |> 
-    filter(date >= !!first_date) |> 
-    filter(primary_id == !!league_id, !match_status_cancelled)
+  existing_match_details <- read_worldfootballr_rds(
+    sprintf("%s_match_details", league_id), 
+    tag = "fotmob_match_details"
+  )
+  existing_match_ids <- unique(existing_match_details$match_id)
   
-  if (nrow(league_matches_by_date) == 0) {
+  new_matches_by_date <- matches_by_date |> 
+    filter(primary_id == !!league_id) |> 
+    filter(date >= !!first_date) |> 
+    filter(!(match_id %in% existing_match_ids)) |> 
+    filter(!match_status_cancelled, match_status_finished)
+  
+  if (nrow(new_matches_by_date) == 0) {
     message(sprintf("Not updating data for `league_id = %s`.", league_id))
-    if (isTRUE(path_exists)) {
-      return(existing_match_details)
-    } else {
-      return(data.frame())
-    }
+    return(existing_match_details)
   }
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
-  match_details <- league_matches_by_date$match_id |> 
+  new_match_details <- new_matches_by_date$match_id |> 
     map_dfr(possibly_scrape_fotmob_match_details)
   
-  if (nrow(match_details) == 0) {
-    message(sprintf("Not updating data for `league_id = %s`. Bad matches: %s", league_id, nrow(league_matches_by_date)))
-    if (isTRUE(path_exists)) {
-      return(existing_match_details)
-    } else {
-      return(data.frame())
-    }
+  if (nrow(existing_match_details) == 0) {
+    message(sprintf("Not updating data for `league_id = %s`. Bad matches: %s", league_id, nrow(new_matches_by_date)))
+    return(existing_match_details)
   }
   
-  if (isTRUE(path_exists)) {
-    match_details <- bind_rows(
-      existing_match_details,
-      match_details
-    )
-  }
+  match_details <- bind_rows(
+    existing_match_details,
+    new_match_details
+  )
   
   attr(match_details, "scrape_timestamp") <- scrape_time_utc
+  ## TODO: Remove write_rds/csv2 lines
+  rds_path <- file.path(data_dir, sprintf("%s_match_details.rds", league_id))
+  csv_path <- file.path(data_dir, sprintf("%s_match_details.csv", league_id))
   write_rds(match_details, rds_path)
   write_csv(match_details, csv_path, na = "")
+  write_worldfootballr_rds_and_csv(
+    x = match_details,
+    name = sprintf("%s_match_details", league_id),
+    tag = "fotmob_match_details"
+  )
   match_details
 }
 
 c(names(league_id_mapping), other_league_ids) |> 
-  walk(slowly_scrape_fotmob_match_details_for_league)
+  walk(scrape_fotmob_match_details_for_league)
