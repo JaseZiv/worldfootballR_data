@@ -12,7 +12,7 @@ scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
 yesterday <- Sys.Date() - 1
 
 dates <- seq.Date(as.Date("2017-08-11"), yesterday, by = "day")
-existing_matches_by_date <- read_rds(rds_path)
+existing_matches_by_date <- read_worldfootballr_rds("matches_by_date", tag = "fotmob_matches_by_date")
 existing_dates <- existing_matches_by_date |> 
   distinct(date) |> 
   pull(date) |> 
@@ -57,5 +57,6 @@ split(popular_matches_by_date, popular_matches_by_date$primary_id) |>
 attr(matches_by_date, "scrape_timestamp") <- scrape_time_utc
 write_worldfootballr_rds_and_csv(
   matches_by_date,
+  name = "matches_by_date",
   tag = "fotmob_matches_by_date"
 )
