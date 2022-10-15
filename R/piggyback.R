@@ -39,7 +39,7 @@ write_worldfootballr_rds_and_csv <- function(x, name, tag) {
   )
 }
 
-read_worldfootballr_release_rds <- function(name, tag) {
+read_worldfootballr_rds <- function(name, tag) {
   path <- sprintf("https://github.com/%s/releases/download/%s/%s.rds", worldfootballr_repo, tag, name)
   readRDS(url(path))
 }
