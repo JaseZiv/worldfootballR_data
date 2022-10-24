@@ -43,10 +43,11 @@ if (length(new_dates) == 0) {
   ) |> 
     distinct()
   
-  popular_league_ids <- c(50, 42, 73, 47, 54, 87, 53, 130, 55)
-  
+  popular_league_ids <- c(50, 42, 44, 73, 47, 54, 87, 53, 130, 55)
+  tier2_big5_and_mls_ids <- c(48, 110, 146, 86, 140, 8972)
+  all_league_ids <- c(popular_league_ids, tier2_big5_and_mls_ids)
   walk(
-    popular_league_ids,
+    all_league_ids,
     ~{
       new_league_matches_by_date <- new_matches_by_date |> filter(primary_id == .x)
       if (nrow(new_league_matches_by_date) == 0) {
@@ -56,7 +57,7 @@ if (length(new_dates) == 0) {
       attr(.x, "scrape_timestamp") <- scrape_time_utc
       write_worldfootballr_rds_and_csv(
         x = league_matches_by_date,
-        name = sprintf("%s_matches_by_date", .y),
+        name = sprintf("%s_matches_by_date", .x),
         tag = "fotmob_matches_by_date"
       )
     }

@@ -68,7 +68,7 @@ scrape_fotmob_match_details_for_league <- function(league_id) {
   new_match_details <- new_matches_by_date$match_id |> 
     map_dfr(possibly_scrape_fotmob_match_details)
   
-  if (nrow(existing_match_details) == 0) {
+  if (nrow(new_match_details) == 0) {
     message(sprintf("Not updating data for `league_id = %s`. Bad matches: %s", league_id, nrow(new_matches_by_date)))
     return(existing_match_details)
   }
