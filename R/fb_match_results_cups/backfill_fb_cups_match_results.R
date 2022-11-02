@@ -2,6 +2,8 @@ library(worldfootballR)
 library(tidyverse)
 library(here)
 
+source("R/piggyback.R")
+
 backfill_historical_comp_results <- function(competition_collect) {
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
@@ -42,7 +44,8 @@ backfill_historical_comp_results <- function(competition_collect) {
   # add the time stamp
   attr(all_results, "scrape_timestamp") <- scrape_time_utc
   
-  saveRDS(all_results, here("data", "match_results_cups", paste0(comp_name_file, "_match_results.rds")))
+  # saveRDS(all_results, here("data", "match_results_cups", paste0(comp_name_file, "_match_results.rds")))
+  write_worldfootballr(x=all_results, name = paste0(comp_name_file, "_match_results"), tag = "match_results_cups", ext = "rds")
 }
 
 

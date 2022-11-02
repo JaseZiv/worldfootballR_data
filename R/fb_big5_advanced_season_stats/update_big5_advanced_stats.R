@@ -3,6 +3,7 @@ library(dplyr)
 library(stringr)
 library(here)
 
+source("R/piggyback.R")
 
 seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv", stringsAsFactors = F)
 
@@ -28,7 +29,8 @@ for(each_stat in stat_types) {
   print(paste0("Updating player stat: ", each_stat))
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
-  df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
+  df <- read_worldfootballr_rds(name=paste0("big5_player_", each_stat), tag = "fb_big5_advanced_season_stats")
+  # df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
   
   new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "player", time_pause = 5)
   
@@ -39,7 +41,8 @@ for(each_stat in stat_types) {
   
   attr(df, "scrape_timestamp") <- scrape_time_utc
   
-  saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
+  write_worldfootballr(x=df, name = paste0("big5_player_", each_stat), tag = "fb_big5_advanced_season_stats", ext = "rds")
+  # saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_player_", each_stat, ".rds")))
 }
 
 
@@ -53,7 +56,8 @@ for(each_stat in stat_types) {
   print(paste0("Updating team stat: ", each_stat))
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
-  df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
+  df <- read_worldfootballr_rds(name=paste0("big5_team_", each_stat), tag = "fb_big5_advanced_season_stats")
+  # df <- readRDS(here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
   
   new_dat <- fb_big5_advanced_season_stats(season_end_year= latest_season, stat_type= each_stat, team_or_player= "team", time_pause = 5)
   
@@ -64,7 +68,8 @@ for(each_stat in stat_types) {
   
   attr(df, "scrape_timestamp") <- scrape_time_utc
   
-  saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
+  write_worldfootballr(x=df, name = paste0("big5_team_", each_stat), tag = "fb_big5_advanced_season_stats", ext = "rds")
+  # saveRDS(df, here("data", "fb_big5_advanced_season_stats", paste0("big5_team_", each_stat, ".rds")))
 }
 
 # scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")

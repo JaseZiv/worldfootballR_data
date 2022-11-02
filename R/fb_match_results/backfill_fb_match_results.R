@@ -132,6 +132,8 @@ library(here)
 
 
 
+source("R/piggyback.R")
+
 
 backfill_historical_results <- function(country_collect) {
   
@@ -159,7 +161,7 @@ backfill_historical_results <- function(country_collect) {
   all_results <- data.frame()
   for(each_fixture in 1:length(fixtures_urls)) {
     print(paste0("Scraping URL ", each_fixture, " of ", length(fixtures_urls)))
-    df <- worldfootballR::.get_each_season_results(fixture_url = fixtures_urls[each_fixture])
+    df <- tryCatch(worldfootballR::.get_each_season_results(fixture_url = fixtures_urls[each_fixture], time_pause = 4), error = function(e) data.frame())
     
     all_results <- bind_rows(all_results, df)
   }
@@ -173,14 +175,9 @@ backfill_historical_results <- function(country_collect) {
   
   # return(all_results)
   
-  saveRDS(all_results, here("data", "match_results", paste0(country_collect, "_match_results.rds")))
+  # saveRDS(all_results, here("data", "match_results", paste0(country_collect, "_match_results.rds")))
+  write_worldfootballr(x=all_results, name = paste0(country_collect, "_match_results"), tag = "match_results", ext = "rds")
 }
-
-
-# eng <- backfill_historical_results(country_collect = "ENG")
-# saveRDS(eng, here("data", "match_results", "ENG_match_results.rds"))
-
-# bel <- backfill_historical_results(country_collect = "BEL")
 
 
 
@@ -195,13 +192,13 @@ countries_to_get <- seasons %>%
                 !is.na(.data$country)) %>% 
   filter(!is.na(country), country != "") %>% pull(country) %>% unique()
 
-exclude_countries <- c("ENG", "BEL", "ARG", "AUS", "AUT")
-countries_new <- countries_to_get[!countries_to_get %in% exclude_countries]
+# exclude_countries <- c("ENG", "BEL", "ARG", "AUS", "AUT")
+# countries_new <- countries_to_get[!countries_to_get %in% exclude_countries]
 
 # countries_to_get <- seasons %>% filter(!is.na(country), country != "") %>% pull(country) %>% unique()
 
 
-for(each_country in countries_to_get[24:length(countries_to_get)]){
+for(each_country in countries_to_get){
   print(paste("Scraping", each_country))
   backfill_historical_results(each_country)
 }

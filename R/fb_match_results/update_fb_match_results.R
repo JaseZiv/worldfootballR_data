@@ -40,7 +40,8 @@ update_fb_match_results <- function(each_country) {
   # 
   # existing_df <- .file_reader(dat_url)
   
-  existing_df <- tryCatch(readRDS(here("data", "match_results", paste0(each_country, "_match_results.rds"))), error = function(e) data.frame())
+  existing_df <- read_worldfootballr_rds(name=paste0(each_country, "_match_results"), tag = "match_results")
+  # existing_df <- tryCatch(readRDS(here("data", "match_results", paste0(each_country, "_match_results.rds"))), error = function(e) data.frame())
   
   # we could scrape every leage for the most recent, but if the season has finished, what's the point?
   # The below logic will look to get any games where there are missing scores (we make the assumption that these are not yet played) 
@@ -73,7 +74,8 @@ update_fb_match_results <- function(each_country) {
       
       attr(new_df_full, "scrape_timestamp") <- scrape_time_utc
       
-      saveRDS(new_df_full, here("data", "match_results", paste0(each_country, "_match_results.rds")))
+      write_worldfootballr(x=new_df_full, name = paste0(each_country, "_match_results"), tag = "match_results", ext = "rds")
+      # saveRDS(new_df_full, here("data", "match_results", paste0(each_country, "_match_results.rds")))
       
     }
     

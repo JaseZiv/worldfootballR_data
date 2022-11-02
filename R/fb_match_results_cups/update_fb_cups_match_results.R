@@ -4,6 +4,7 @@ library(lubridate)
 library(janitor)
 library(here)
 
+source("R/piggyback.R")
 
 seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv", stringsAsFactors = F)
 
@@ -46,7 +47,8 @@ update_fb_comp_match_results <- function(each_comp) {
   
   f_name <- janitor::make_clean_names(each_comp)
   
-  existing_df <- tryCatch(readRDS(here("data", "match_results_cups", paste0(f_name, "_match_results.rds"))), error = function(e) data.frame())
+  existing_df <- read_worldfootballr_rds(name=paste0(f_name, "_match_results"), tag = "match_results_cups")
+  # existing_df <- tryCatch(readRDS(here("data", "match_results_cups", paste0(f_name, "_match_results.rds"))), error = function(e) data.frame())
   
   # we could scrape every leage for the most recent, but if the season has finished, what's the point?
   # The below logic will look to get any games where there are missing scores (we make the assumption that these are not yet played) 
@@ -79,7 +81,8 @@ update_fb_comp_match_results <- function(each_comp) {
     
     attr(new_df_full, "scrape_timestamp") <- scrape_time_utc
     
-    saveRDS(new_df_full, here("data", "match_results_cups", paste0(f_name, "_match_results.rds")))
+    write_worldfootballr(x=new_df_full, name = paste0(f_name, "_match_results"), tag = "match_results_cups", ext = "rds")
+    # saveRDS(new_df_full, here("data", "match_results_cups", paste0(f_name, "_match_results.rds")))
     
   }
   
