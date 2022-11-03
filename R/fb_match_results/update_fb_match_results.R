@@ -2,6 +2,7 @@ library(worldfootballR)
 library(tidyverse)
 library(here)
 
+source("R/piggyback.R")
 
 seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv", stringsAsFactors = F)
 
