@@ -3,7 +3,9 @@ library(tidyverse)
 library(here)
 
 # set the working directory to make reading and writing easier
-setwd(here("data", "understat_shots"))
+# setwd(here("data", "understat_shots"))
+
+source("R/piggyback.R")
 
 # valid league names for scraping data
 leagues <- c("EPL", "La liga", "Bundesliga", "Serie A", "Ligue 1", "RFPL")
@@ -35,7 +37,7 @@ for(each_league in leagues) {
   # to do this, we need to clean the valid league names to match the file structure
   league_name_clean <- janitor::make_clean_names(each_league)
   # then read in data
-  f <- readRDS(paste0(league_name_clean, "_shot_data.rds")) %>% 
+  f <- read_worldfootballr_rds(name=paste0(league_name_clean, "_shot_data"), tag = "understat_shots") %>% 
     mutate(minute = as.numeric(minute))
   # need to manually coerce columns to numeric as of the start of 22/23 season to match old data
   f <- f %>% 
@@ -82,5 +84,7 @@ for(each_league in leagues) {
   
   # now write the file again, regardless of whether there was new data. Will also freshly timestamp the rds
   attr(f, "scrape_timestamp") <- scrape_time_utc
-  saveRDS(f, paste0(league_name_clean, "_shot_data.rds"))
+  
+  write_worldfootballr(x=f, name=paste0(league_name_clean, "_shot_data"), tag = "understat_shots", ext = "rds")
+  
 }
