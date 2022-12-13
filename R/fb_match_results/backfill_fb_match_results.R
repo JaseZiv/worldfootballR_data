@@ -89,17 +89,17 @@ library(here)
 #   
 #   suppressWarnings(
 #     season_summary <- season_summary %>%
-#       dplyr::filter(is.na(.data$Time) | .data$Time != "Time") %>%
-#       dplyr::mutate(Score = iconv(.data$Score, 'utf-8', 'ascii', sub=' ') %>% stringr::str_squish()) %>%
-#       tidyr::separate(.data$Score, into = c("HomeGoals", "AwayGoals"), sep = " ") %>%
-#       dplyr::mutate(HomeGoals = as.numeric(.data$HomeGoals),
-#                     AwayGoals = as.numeric(.data$AwayGoals),
-#                     Attendance = as.numeric(gsub(",", "", .data$Attendance)))
+#       dplyr::filter(is.na(.data[["Time"]]) | .data[["Time"]] != "Time") %>%
+#       dplyr::mutate(Score = iconv(.data[["Score"]], 'utf-8', 'ascii', sub=' ') %>% stringr::str_squish()) %>%
+#       tidyr::separate(.data[["Score"]], into = c("HomeGoals", "AwayGoals"), sep = " ") %>%
+#       dplyr::mutate(HomeGoals = as.numeric(.data[["HomeGoals"]]),
+#                     AwayGoals = as.numeric(.data[["AwayGoals"]]),
+#                     Attendance = as.numeric(gsub(",", "", .data[["Attendance"]])))
 #   )
 #   
 #   season_summary <- season_summary %>%
-#     dplyr::mutate(HomeGoals = ifelse(is.na(.data$HomeGoals) & !is.na(.data$AwayGoals), .data$AwayGoals, .data$HomeGoals),
-#                   AwayGoals = ifelse(is.na(.data$AwayGoals) & !is.na(.data$HomeGoals), .data$HomeGoals, .data$AwayGoals))
+#     dplyr::mutate(HomeGoals = ifelse(is.na(.data[["HomeGoals"]]) & !is.na(.data[["AwayGoals"]]), .data[["AwayGoals"]], .data[["HomeGoals"]]),
+#                   AwayGoals = ifelse(is.na(.data[["AwayGoals"]]) & !is.na(.data[["HomeGoals"]]), .data[["HomeGoals"]], .data[["AwayGoals"]]))
 #   
 #   season_summary <- cbind(fixture_url, season_summary)
 #   
@@ -115,16 +115,16 @@ library(here)
 #   
 #   if(any(stringr::str_detect(names(season_summary), "xG"))) {
 #     season_summary <- season_summary %>%
-#       dplyr::select(.data$fixture_url, Round, .data$Wk, .data$Day, .data$Date, .data$Time, .data$Home, .data$HomeGoals, Home_xG=.data$xG, .data$Away, .data$AwayGoals, Away_xG=.data$xG.1, .data$Attendance, .data$Venue, .data$Referee, .data$Notes) %>% 
-#       dplyr::mutate(Home_xG = as.numeric(.data$Home_xG),
-#                     Away_xG = as.numeric(.data$Away_xG))
+#       dplyr::select(.data[["fixture_url"]], Round, .data[["Wk"]], .data[["Day"]], .data[["Date"]], .data[["Time"]], .data[["Home"]], .data[["HomeGoals"]], Home_xG=.data[["xG"]], .data[["Away"]], .data[["AwayGoals"]], Away_xG=.data[["xG.1"]], .data[["Attendance"]], .data[["Venue"]], .data[["Referee"]], .data[["Notes"]]) %>% 
+#       dplyr::mutate(Home_xG = as.numeric(.data[["Home_xG"]]),
+#                     Away_xG = as.numeric(.data[["Away_xG"]]))
 #   } else {
 #     season_summary <- season_summary %>%
-#       dplyr::select(.data$fixture_url, Round, .data$Wk, .data$Day, .data$Date, .data$Time, .data$Home, .data$HomeGoals, .data$Away, .data$AwayGoals, .data$Attendance, .data$Venue, .data$Referee, .data$Notes)
+#       dplyr::select(.data[["fixture_url"]], Round, .data[["Wk"]], .data[["Day"]], .data[["Date"]], .data[["Time"]], .data[["Home"]], .data[["HomeGoals"]], .data[["Away"]], .data[["AwayGoals"]], .data[["Attendance"]], .data[["Venue"]], .data[["Referee"]], .data[["Notes"]])
 #   }
 #   
 #   season_summary <- season_summary %>%
-#     dplyr::mutate(Wk = as.character(.data$Wk)) %>% 
+#     dplyr::mutate(Wk = as.character(.data[["Wk"]])) %>% 
 #     dplyr::mutate(MatchURL = match_urls)
 #   
 #   return(season_summary)
@@ -142,16 +142,16 @@ backfill_historical_results <- function(country_collect) {
   
   fixtures_df <- seasons %>%
     # filtering out things that aren't domestic leagues:
-    dplyr::filter(stringr::str_detect(.data$competition_type, "Leagues"),
+    dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Leagues"),
                   tier != "",
-                  !is.na(.data$country)) %>% 
+                  !is.na(.data[["country"]])) %>% 
     # get seasons that are only for the country selected
     dplyr::filter(country %in% country_collect,
-                  !is.na(.data$fixtures_url)) %>%
-    dplyr::arrange(desc(.data$season_end_year))
+                  !is.na(.data[["fixtures_url"]])) %>%
+    dplyr::arrange(desc(.data[["season_end_year"]]))
   
   fixtures_urls <- fixtures_df %>% 
-    dplyr::pull(.data$fixtures_url) %>% unique()
+    dplyr::pull(.data[["fixtures_url"]]) %>% unique()
   
   # pb <- progress::progress_bar$new(total = length(fixtures_urls))
   
@@ -167,11 +167,11 @@ backfill_historical_results <- function(country_collect) {
   }
   
   all_results <- fixtures_df %>%
-    dplyr::select(Competition_Name=.data$competition_name, Gender=.data$gender, Country=.data$country, Season_End_Year=.data$season_end_year, Tier=.data$tier, .data$seasons_urls, .data$fixtures_url) %>%
+    dplyr::select(Competition_Name=.data[["competition_name"]], Gender=.data[["gender"]], Country=.data[["country"]], Season_End_Year=.data[["season_end_year"]], Tier=.data[["tier"]], .data[["seasons_urls"]], .data[["fixtures_url"]]) %>%
     dplyr::right_join(all_results, by = c("fixtures_url" = "fixture_url")) %>%
-    dplyr::select(-.data$seasons_urls, -.data$fixtures_url) %>%
-    dplyr::mutate(Date = lubridate::ymd(.data$Date)) %>%
-    dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, .data$Wk, .data$Date, .data$Time) %>% dplyr::distinct(.keep_all = T)
+    dplyr::select(-.data[["seasons_urls"]], -.data[["fixtures_url"]]) %>%
+    dplyr::mutate(Date = lubridate::ymd(.data[["Date"]])) %>%
+    dplyr::arrange(.data[["Country"]], .data[["Competition_Name"]], .data[["Gender"]], .data[["Season_End_Year"]], .data[["Wk"]], .data[["Date"]], .data[["Time"]]) %>% dplyr::distinct(.keep_all = T)
   
   # return(all_results)
   
@@ -187,9 +187,9 @@ seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_da
 
 countries_to_get <- seasons %>%
   # filtering out things that aren't domestic leagues:
-  dplyr::filter(stringr::str_detect(.data$competition_type, "Leagues"),
+  dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Leagues"),
                 tier != "",
-                !is.na(.data$country)) %>% 
+                !is.na(.data[["country"]])) %>% 
   filter(!is.na(country), country != "") %>% pull(country) %>% unique()
 
 # exclude_countries <- c("ENG", "BEL", "ARG", "AUS", "AUT")

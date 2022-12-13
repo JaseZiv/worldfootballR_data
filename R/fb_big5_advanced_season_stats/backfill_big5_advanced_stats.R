@@ -9,7 +9,7 @@ seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_da
 
 latest_season <- seasons %>%
   # filtering out things that aren't domestic leagues:
-  dplyr::filter(stringr::str_detect(.data$competition_type, "Big 5 European Leagues")) %>% 
+  dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Big 5 European Leagues")) %>% 
   group_by(country) %>% slice_max(season_end_year) %>% 
   pull(season_end_year)
 

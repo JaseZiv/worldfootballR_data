@@ -9,9 +9,9 @@ seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_da
 
 latest_seasons <- seasons %>%
   # filtering out things that aren't domestic leagues:
-  dplyr::filter(stringr::str_detect(.data$competition_type, "Leagues"),
+  dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Leagues"),
                 tier != "",
-                !is.na(.data$country)) %>% 
+                !is.na(.data[["country"]])) %>% 
   filter(!is.na(country), country != "") %>% 
   group_by(country) %>% slice_max(season_end_year) %>% 
   distinct()
@@ -20,9 +20,9 @@ latest_seasons <- seasons %>%
 
 countries_to_get <- latest_seasons %>%
   # filtering out things that aren't domestic leagues:
-  dplyr::filter(stringr::str_detect(.data$competition_type, "Leagues"),
+  dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Leagues"),
                 tier != "",
-                !is.na(.data$country)) %>% 
+                !is.na(.data[["country"]])) %>% 
   filter(!is.na(country), country != "") %>%
   # also want to keep only seasons that are not yet completed
   filter(!is_completed) %>% pull(country) %>% unique()
@@ -59,18 +59,18 @@ update_fb_match_results <- function(each_country) {
     if(nrow(new_df) != 0) {
       
       new_df_full <- latest_seasons %>% filter(country == each_country) %>%
-        dplyr::select(Competition_Name=.data$competition_name, Gender=.data$gender, Country=.data$country, Season_End_Year=.data$season_end_year, Tier=.data$tier, .data$seasons_urls, .data$fixtures_url) %>%
+        dplyr::select(Competition_Name=.data[["competition_name"]], Gender=.data[["gender"]], Country=.data[["country"]], Season_End_Year=.data[["season_end_year"]], Tier=.data[["tier"]], .data[["seasons_urls"]], .data[["fixtures_url"]]) %>%
         dplyr::right_join(new_df, by = c("fixtures_url" = "fixture_url")) %>%
-        dplyr::select(-.data$seasons_urls, -.data$fixtures_url) %>%
-        dplyr::mutate(Date = lubridate::ymd(.data$Date)) %>%
-        dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, as.numeric(.data$Wk), .data$Date, .data$Time) %>% dplyr::distinct(.keep_all = T)
+        dplyr::select(-.data[["seasons_urls"]], -.data[["fixtures_url"]]) %>%
+        dplyr::mutate(Date = lubridate::ymd(.data[["Date"]])) %>%
+        dplyr::arrange(.data[["Country"]], .data[["Competition_Name"]], .data[["Gender"]], .data[["Season_End_Year"]], as.numeric(.data[["Wk"]]), .data[["Date"]], .data[["Time"]]) %>% dplyr::distinct(.keep_all = T)
       
       if(nrow(existing_df) != 0) {
         existing_df <- existing_df %>% 
           anti_join(new_df_full, by = c("Gender", "Season_End_Year", "Tier"))
         
         new_df_full <- bind_rows(existing_df, new_df_full) %>%
-          dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, .data$Date, .data$Time, as.numeric(.data$Wk)) %>% dplyr::distinct(.keep_all = T)
+          dplyr::arrange(.data[["Country"]], .data[["Competition_Name"]], .data[["Gender"]], .data[["Season_End_Year"]], .data[["Date"]], .data[["Time"]], as.numeric(.data[["Wk"]])) %>% dplyr::distinct(.keep_all = T)
       }
       
       attr(new_df_full, "scrape_timestamp") <- scrape_time_utc

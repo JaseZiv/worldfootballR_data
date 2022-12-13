@@ -13,9 +13,9 @@ exclusion_cups <- c("UEFA Super Cup", "FA Community Shield", "Supercopa de EspaÃ
 
 latest_cup_seasons <- seasons %>%
   # filtering out things that aren't domestic leagues:
-  filter(!stringr::str_detect(.data$competition_type, "Leagues"),
+  filter(!stringr::str_detect(.data[["competition_type"]], "Leagues"),
          # and also the single match type cup games:
-         !.data$competition_name %in% exclusion_cups) %>% 
+         !.data[["competition_name"]] %in% exclusion_cups) %>% 
   group_by(competition_name) %>% slice_max(season_end_year) %>% 
   distinct()
 
@@ -65,18 +65,18 @@ update_fb_comp_match_results <- function(each_comp) {
   if(nrow(new_df) != 0) {
     
     new_df_full <- latest_cup_seasons %>% filter(competition_name == each_comp) %>%
-      dplyr::select(Competition_Name=.data$competition_name, Gender=.data$gender, Country=.data$country, Season_End_Year=.data$season_end_year, Tier=.data$tier, .data$seasons_urls, .data$fixtures_url) %>%
+      dplyr::select(Competition_Name=.data[["competition_name"]], Gender=.data[["gender"]], Country=.data[["country"]], Season_End_Year=.data[["season_end_year"]], Tier=.data[["tier"]], .data[["seasons_urls"]], .data[["fixtures_url"]]) %>%
       dplyr::right_join(new_df, by = c("fixtures_url" = "fixture_url")) %>%
-      dplyr::select(-.data$seasons_urls, -.data$fixtures_url) %>%
-      dplyr::mutate(Date = lubridate::ymd(.data$Date)) %>%
-      dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, as.numeric(.data$Wk), .data$Date, .data$Time) %>% dplyr::distinct(.keep_all = T)
+      dplyr::select(-.data[["seasons_urls"]], -.data[["fixtures_url"]]) %>%
+      dplyr::mutate(Date = lubridate::ymd(.data[["Date"]])) %>%
+      dplyr::arrange(.data[["country"]], .data[["competition_name"]], .data[["gender"]], .data[["season_end_year"]], as.numeric(.data[["Wk"]]), .data[["Date"]], .data[["Time"]]) %>% dplyr::distinct(.keep_all = T)
     
     if(nrow(existing_df) != 0) {
       existing_df <- existing_df %>% 
         anti_join(new_df_full, by = c("Gender", "Season_End_Year", "Tier"))
       
       new_df_full <- bind_rows(existing_df, new_df_full) %>%
-        dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, .data$Date, .data$Time, as.numeric(.data$Wk)) %>% dplyr::distinct(.keep_all = T)
+        dplyr::arrange(.data[["country"]], .data[["competition_name"]], .data[["gender"]], .data[["season_end_year"]], .data[["Date"]], .data[["Time"]], as.numeric(.data[["Wk"]])) %>% dplyr::distinct(.keep_all = T)
     }
     
     attr(new_df_full, "scrape_timestamp") <- scrape_time_utc

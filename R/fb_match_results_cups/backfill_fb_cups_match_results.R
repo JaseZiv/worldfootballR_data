@@ -12,14 +12,14 @@ backfill_historical_comp_results <- function(competition_collect) {
   
   fixtures_df <- seasons %>%
     # get only things that aren't domestic leagues:
-    dplyr::filter(!stringr::str_detect(.data$competition_type, "Leagues")) %>% 
+    dplyr::filter(!stringr::str_detect(.data[["competition_type"]], "Leagues")) %>% 
     # get seasons that are only for the competition selected
     dplyr::filter(competition_name %in% competition_collect,
-                  !is.na(.data$season_end_year)) %>%
-    dplyr::arrange(desc(.data$season_end_year))
+                  !is.na(.data[["season_end_year"]])) %>%
+    dplyr::arrange(desc(.data[["season_end_year"]]))
   
   fixtures_urls <- fixtures_df %>% 
-    dplyr::pull(.data$fixtures_url) %>% unique()
+    dplyr::pull(.data[["fixtures_url"]]) %>% unique()
   
   
   all_results <- data.frame()
@@ -31,11 +31,11 @@ backfill_historical_comp_results <- function(competition_collect) {
   }
   
   all_results <- fixtures_df %>%
-    dplyr::select(Competition_Name=.data$competition_name, Gender=.data$gender, Country=.data$country, Season_End_Year=.data$season_end_year, Tier=.data$tier, .data$seasons_urls, .data$fixtures_url) %>%
+    dplyr::select(Competition_Name=.data[["competition_name"]], Gender=.data[["gender"]], Country=.data[["country"]], Season_End_Year=.data[["season_end_year"]], Tier=.data[["tier"]], .data[["seasons_urls"]], .data[["fixtures_url"]]) %>%
     dplyr::right_join(all_results, by = c("fixtures_url" = "fixture_url")) %>%
-    dplyr::select(-.data$seasons_urls, -.data$fixtures_url) %>%
-    dplyr::mutate(Date = lubridate::ymd(.data$Date)) %>%
-    dplyr::arrange(.data$Country, .data$Competition_Name, .data$Gender, .data$Season_End_Year, .data$Wk, .data$Date, .data$Time) %>% dplyr::distinct(.keep_all = T)
+    dplyr::select(-.data[["seasons_urls"]], -.data[["fixtures_url"]]) %>%
+    dplyr::mutate(Date = lubridate::ymd(.data[["Date"]])) %>%
+    dplyr::arrange(.data[["Country"]], .data[["Competition_Name"]], .data[["Gender"]], .data[["Season_End_Year"]], .data[["Wk"]], .data[["Date"]], .data[["Time"]]) %>% dplyr::distinct(.keep_all = T)
   
   # return(all_results)
   # clean names for files - will need to repeat this step for loading functions to convert the text users will see
@@ -58,8 +58,8 @@ seasons <- read.csv("https://raw.githubusercontent.com/JaseZiv/worldfootballR_da
 
 cups_to_get <- seasons %>%
   # Getting only things that aren't domestic leagues:
-  dplyr::filter(!stringr::str_detect(.data$competition_type, "Leagues"),
-                !is.na(.data$season_end_year)) %>% 
+  dplyr::filter(!stringr::str_detect(.data[["competition_type"]], "Leagues"),
+                !is.na(.data[["season_end_year"]])) %>% 
   dplyr::pull(competition_name) %>% unique()
 
 
