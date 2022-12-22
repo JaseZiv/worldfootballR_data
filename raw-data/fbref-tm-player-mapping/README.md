@@ -6,6 +6,17 @@ Currently, the mappings are for players who have played in the top 5 European le
 
 I aim to update this fairly frequently, so that players who subsequently appear on FBref in these leagues will continue to be mapped.
 
+***
+
+## Show your support
+Follow me on Twitter ([jaseziv](https://twitter.com/jaseziv)) for updates
+
+If this package helps you, all I ask is that you star this repo. If you did want to show your support and contribute to server time and data storage costs, feel free to send a small donation through the link below.
+
+<a href="https://www.buymeacoffee.com/jaseziv83A" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Coffee (Server Time)" height="41" width="174"></a>
+
+***
+
 ## Usage
 
 To update the data, first run `prepare_working_files.R`. This will generate a list of csv outputs. There are two that will potentially need to be actioned:
@@ -23,6 +34,8 @@ The project also writes the mapped data to a gogglesheet, found [here](https://d
 ### Update (2022-08-11) Update Player Positions
 
 For players that were mapped originally, some of these may have changed positions since the initial map. To get current TM positions, run the file names `update_player_positions.R`.
+
+***
 
 ## Contributing
 
