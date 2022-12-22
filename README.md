@@ -17,7 +17,7 @@ Repository to hold various data sets scraped from the sites supported in the [`w
 ## Show your support
 Follow me on Twitter ([jaseziv](https://twitter.com/jaseziv)) for updates
 
-If this package helps you, all I ask is that you star this repo. If you did want to show your support and contribute to server time and data storage costs, feel free to send a small donation through the link below.
+If this data helps you, all I ask is that you star this repo. If you did want to show your support and contribute to server time and data storage costs, feel free to send a small donation through the link below.
 
 <a href="https://www.buymeacoffee.com/jaseziv83A" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Coffee (Server Time)" height="41" width="174"></a>
 
