@@ -11,6 +11,12 @@ source("R/piggyback.R")
 leagues <- c("EPL", "La liga", "Bundesliga", "Serie A", "Ligue 1", "RFPL")
 
 
+.get_understat_json <- function(page_url) {
+  tryCatch(
+    httr::GET(page_url, httr::set_cookies(.cookies = c("beget" = "begetok"))) %>% httr::content(),
+    error = function(e) NA
+  )
+}
 
 
 for(each_league in leagues) {
@@ -27,7 +33,7 @@ for(each_league in leagues) {
   # first we want to get the current season:
   main_url <- "https://understat.com/"
   page_url <- paste0(main_url, "league/", each_league)
-  page <-  tryCatch( xml2::read_html(page_url), error = function(e) NA)
+  page <-  tryCatch( .get_understat_json(page_url), error = function(e) NA)
   
   season_element <- page %>% rvest::html_nodes(xpath = '//*[@name="season"]') %>%
     rvest::html_nodes("option")
@@ -39,6 +45,7 @@ for(each_league in leagues) {
   # then read in data
   f <- read_worldfootballr_rds(name=paste0(league_name_clean, "_shot_data"), tag = "understat_shots") %>% 
     mutate(minute = as.numeric(minute))
+  
   # need to manually coerce columns to numeric as of the start of 22/23 season to match old data
   f <- f %>% 
     mutate(
@@ -64,6 +71,8 @@ for(each_league in leagues) {
     match_urls <- paste0("https://understat.com/match/", missing_ids)
     
     shots <- match_urls %>% purrr::map_df(worldfootballR::understat_match_shots)
+    # there must have been a change to the json data exposed by Understat at some point, so we manually set it now
+    shots$league <- each_league
     # need to manually coerce columns to numeric as of the start of 22/23 season to match old data
     shots <- shots %>% 
       mutate(
