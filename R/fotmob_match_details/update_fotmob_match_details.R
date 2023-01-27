@@ -8,7 +8,7 @@ library(readr)
 source("R/piggyback.R")
 matches_by_date <- read_worldfootballr_rds("matches_by_date", tag = "fotmob_matches_by_date")
 
-scrape_fotmob_match_details <- function(match_id, overwrite = FALSE) {
+scrape_fotmob_match_details <- function(match_id) {
   Sys.sleep(1)
   message(sprintf("Scraping matches for %s.", match_id))
   fotmob_get_match_details(match_id)
