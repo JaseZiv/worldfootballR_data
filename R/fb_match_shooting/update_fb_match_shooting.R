@@ -98,7 +98,8 @@ update_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
   
   attr(match_shooting, "scrape_timestamp") <- scrape_time_utc
 
-  write_worldfootballr(
+  write_worldfootballr_rds_and_csv(
+    ext = "rds",
     x = match_shooting, 
     name = name, 
     tag = fb_match_shooting_tag

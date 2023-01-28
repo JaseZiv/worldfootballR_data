@@ -132,6 +132,7 @@ local_data |>
       name,
       ~{
         write_worldfootballr(
+          ext = "rds",
           x = .x,
           name = .y,
           tag = "fb_match_shooting"
