@@ -93,8 +93,6 @@ scrape_fotmob_match_details_for_league <- function(league_id) {
     return(existing_match_details)
   }
   
-  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
-  
   new_match_details <- new_matches_by_date$match_id[1:2] |> 
     map_dfr(scrape_fotmob_match_details)
   
@@ -112,11 +110,6 @@ scrape_fotmob_match_details_for_league <- function(league_id) {
   write_rds(match_details, rds_path)
   write_csv(match_details, csv_path, na = "")
 
-  # write_worldfootballr_rds_and_csv(
-  #   x = match_details,
-  #   name = sprintf("%s_match_details", league_id),
-  #   tag = "fotmob_match_details"
-  # )
   match_details
 }
 
