@@ -1,4 +1,5 @@
 library(worldfootballR)
+library(tidyr)
 library(dplyr)
 library(readr)
 library(purrr)
@@ -6,13 +7,17 @@ library(tibble)
 
 source("R/piggyback.R")
 
-countries <- c(
-  "ENG",
-  "ESP",
-  "FRA",
-  "GER",
-  "ITA",
-  "USA"
+params <- crossing(
+  country = c(
+    "ENG",
+    "ESP",
+    "FRA",
+    "GER",
+    "ITA",
+    "USA"
+  ),
+  tier = "1st",
+  gender = "M"
 )
 
 scrape_fb_match_shooting <- function(match_url) {
@@ -27,13 +32,21 @@ possibly_scrape_fb_match_shooting <- possibly(
 )
 
 fb_match_shooting_tag <- "fb_match_shooting"
-update_fb_match_shooting <- function(country, gender = "M", tier = "1st")) {
+update_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
   name <- sprintf("%s_%s_%s_match_shooting", country, gender, tier)
+  
+  match_urls <- fb_match_urls(
+    country = country,
+    tier = tier,
+    gender = gender,
+    season_end_year = 2023
+  )
+  
   existing_match_shooting <- read_worldfootballr_rds(
     name = name, 
     tag = fb_match_shooting_tag
   )
-  existing_match_shooting_urls <- unique(existing_match_shooting$match_url)
+  existing_match_urls <- unique(existing_match_shooting$match_url)
   new_match_urls <- setdiff(match_urls, existing_match_urls)
   
   if (length(new_match_urls) == 0) {
@@ -58,14 +71,26 @@ update_fb_match_shooting <- function(country, gender = "M", tier = "1st")) {
   write_worldfootballr(
     x = match_shooting, 
     name = name, 
-    tag = fb_match_shooting_tag
+    tag = fb_match_shooting_tag,
     ext = "rds"
   )
   
   match_shooting
 }
 
-walk(
-  countries,
-  update_fb_match_shooting
-)
+params |> 
+  mutate(
+    data = pmap(
+      list(
+        country,
+        gender,
+        tier
+      ),
+      ~update_fb_match_shooting(
+        country = ..1,
+        gender = ..2,
+        tier = ..3
+      )
+    )
+  )
+
