@@ -54,22 +54,22 @@ backfill_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
     season_end_year = 2018:2023
   )
 
-  # if (isTRUE(path_exists)) {
-  #   existing_match_shooting <- read_rds(rds_path)
-  #   existing_match_urls <- unique(existing_match_shooting$match_url)
-  #   new_match_urls <- setdiff(match_urls, existing_match_urls)
-  # } else {
-  #   existing_match_shooting <- tibble()
-  #   new_match_urls <- match_urls
-  # }
-  # 
-  # if (length(new_match_urls) == 0) {
-  #   message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
-  #   return(existing_match_shooting)
-  # }
+  if (isTRUE(path_exists)) {
+    existing_match_shooting <- read_rds(rds_path)
+    existing_match_urls <- unique(existing_match_shooting$match_url)
+    new_match_urls <- setdiff(match_urls, existing_match_urls)
+  } else {
+    existing_match_shooting <- tibble()
+    new_match_urls <- match_urls
+  }
+
+  if (length(new_match_urls) == 0) {
+    message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
+    return(existing_match_shooting)
+  }
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
-  new_match_urls <- match_urls
+
   new_match_shooting <- new_match_urls |> 
     set_names() |> 
     map_dfr(
@@ -79,7 +79,7 @@ backfill_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
     relocate(match_url, .before = 1)
   
   match_shooting <- bind_rows(
-    # existing_match_shooting,
+    existing_match_shooting,
     new_match_shooting
   ) |>
     as_tibble()
