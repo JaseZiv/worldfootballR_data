@@ -42,21 +42,23 @@ possibly_scrape_fb_match_shooting <- possibly(
   quiet = FALSE
 )
 
+seasons <- 2018:2023
 backfill_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
 
   rds_path <- file.path(data_dir, sprintf("%s_%s_%s_match_shooting.rds", country, gender, tier))
+  message(sprintf("Updating %s.", rds_path))
   path_exists <- file.exists(rds_path)
   
   match_urls <- fb_match_urls(
     country = country,
     tier = tier,
     gender = gender,
-    season_end_year = 2018:2023
+    season_end_year = seasons
   )
 
   if (isTRUE(path_exists)) {
     existing_match_shooting <- read_rds(rds_path)
-    existing_match_urls <- unique(existing_match_shooting$match_url)
+    existing_match_urls <- unique(existing_match_shooting$MatchURL)
     new_match_urls <- setdiff(match_urls, existing_match_urls)
   } else {
     existing_match_shooting <- tibble()
@@ -67,23 +69,34 @@ backfill_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
     message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
     return(existing_match_shooting)
   }
-  
-  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
 
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   new_match_shooting <- new_match_urls |> 
     set_names() |> 
     map_dfr(
       possibly_scrape_fb_match_shooting,
-      .id = "match_url"
+      .id = "MatchURL"
     ) |> 
-    relocate(match_url, .before = 1)
+    relocate(MatchURL, .before = 1)
+  
+  match_results <- load_match_results(
+    country = country,
+    tier = tier,
+    gender = gender,
+    season_end_year = seasons
+  )
   
   match_shooting <- bind_rows(
     existing_match_shooting,
     new_match_shooting
   ) |>
+    inner_join(
+      match_results |> 
+        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL),
+      by = "MatchURL"
+    ) |> 
     as_tibble()
-  
+
   attr(match_shooting, "scrape_timestamp") <- scrape_time_utc
   write_rds(
     match_shooting, 
