@@ -131,8 +131,7 @@ local_data |>
       data,
       name,
       ~{
-        write_worldfootballr(
-          ext = "rds",
+        write_worldfootballr_rds_and_csv(
           x = .x,
           name = .y,
           tag = "fb_match_shooting"
