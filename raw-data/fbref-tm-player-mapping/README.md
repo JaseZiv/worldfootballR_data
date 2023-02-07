@@ -2,7 +2,15 @@
 
 This section creates a map of player URLs from FBref players to the relevant player's data on Transfermarkt.
 
-Currently, the mappings are for players who have played in the top 5 European leagues since the start of the 2017-18 season.
+Currently, the mappings are for players who have played in the following man's leagues since the start of the 2017-18 season:
+
+* Top 5 European leagues
+* MLS
+* Eredivise
+* Portuguese Primeira Liga
+* Campeonato Brasileiro Serie A
+* Liga MX
+* English Championship
 
 I aim to update this fairly frequently, so that players who subsequently appear on FBref in these leagues will continue to be mapped.
 
