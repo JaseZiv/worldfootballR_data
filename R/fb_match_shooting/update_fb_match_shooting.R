@@ -5,20 +5,8 @@ library(readr)
 library(purrr)
 library(tibble)
 
-source("R/piggyback.R")
-
-params <- crossing(
-  country = c(
-    "ENG",
-    "ESP",
-    "FRA",
-    "GER",
-    "ITA",
-    "USA"
-  ),
-  tier = "1st",
-  gender = "M"
-)
+source(file.path("R", "piggyback.R"))
+source(file.path("R", "fb_match_shooting", "shared_fb_match_shooting.R"))
 
 seasons <- read_csv(
   "https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv"
@@ -38,7 +26,6 @@ latest_seasons <- seasons |>
     tier,
     season_end_year
   )
-
 
 scrape_fb_match_shooting <- function(match_url) {
   message(sprintf("Scraping matches for %s.", match_url))
