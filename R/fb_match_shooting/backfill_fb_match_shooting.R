@@ -31,7 +31,6 @@ possibly_scrape_fb_match_shooting <- possibly(
   quiet = FALSE
 )
 
-seasons <- 2019:2023
 backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', group = 'big5') {
   
   rds_path <- file.path(data_dir, sprintf('%s_%s_%s_match_shooting.rds', country, gender, tier))
