@@ -43,12 +43,14 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
     2019
   )
   
-  seasons <- first_season_end_year:2023
+  # season_end_years <- first_season_end_year:2023
+  # season_end_years <- 2022
+  season_end_years <- ifelse(country == 'USA', 2021, 2022)
   match_urls <- fb_match_urls(
     country = country,
     tier = tier,
     gender = gender,
-    season_end_year = seasons
+    season_end_year = season_end_years
   )
   
   if (isTRUE(path_exists)) {
@@ -62,7 +64,13 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
   
   if (length(new_match_urls) == 0) {
     message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
-    return(existing_match_shooting)
+    scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+    attr(existing_match_shooting, "scrape_timestamp") <- scrape_time_utc
+    write_rds(
+      existing_match_shooting, 
+      rds_path
+    )
+    return(invisible(existing_match_shooting))
   }
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
@@ -78,7 +86,7 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
     country = country,
     tier = tier,
     gender = gender,
-    season_end_year = seasons
+    season_end_year = season_end_years
   )
   
   match_shooting <- bind_rows(
@@ -87,8 +95,7 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
   ) |>
     inner_join(
       match_results |> 
-        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL),
-      by = "MatchURL"
+        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL)
     ) |> 
     as_tibble()
   
@@ -114,7 +121,7 @@ local_data <- params |>
         country = ..1,
         gender = ..2,
         tier = ..3,
-        gruop = ..4
+        group = ..4
       )
     )
   )
