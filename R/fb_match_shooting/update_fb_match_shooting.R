@@ -4,18 +4,19 @@ library(dplyr)
 library(readr)
 library(purrr)
 library(tibble)
+library(rlang)
 
-source(file.path("R", "piggyback.R"))
-source(file.path("R", "fb_match_shooting", "shared_fb_match_shooting.R"))
+source(file.path('R', 'piggyback.R'))
+source(file.path('R', 'fb_match_shooting', 'shared_fb_match_shooting.R'))
 
 seasons <- read_csv(
-  "https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv"
+  'https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv'
 )
 
 latest_seasons <- seasons |>
   semi_join(
     params,
-    by = c("country", "tier", "gender")
+    by = c('country', 'tier', 'gender')
   ) |> 
   group_by(country, tier, gender) |>
   slice_max(season_end_year) |> 
@@ -28,7 +29,7 @@ latest_seasons <- seasons |>
   )
 
 scrape_fb_match_shooting <- function(match_url) {
-  message(sprintf("Scraping matches for %s.", match_url))
+  message(sprintf('Scraping matches for %s.', match_url))
   fb_match_shooting(match_url)
 }
 
@@ -38,10 +39,10 @@ possibly_scrape_fb_match_shooting <- possibly(
   quiet = FALSE
 )
 
-fb_match_shooting_tag <- "fb_match_shooting"
-update_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
-  name <- sprintf("%s_%s_%s_match_shooting", country, gender, tier)
-  message(sprintf("Updating %s.", name))
+fb_match_shooting_tag <- 'fb_match_shooting'
+update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
+  name <- sprintf('%s_%s_%s_match_shooting', country, gender, tier)
+  message(sprintf('Updating %s.', name))
   
   latest_season <- latest_seasons |> 
     filter(
@@ -70,20 +71,34 @@ update_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
     return(existing_match_shooting)
   }
   
-  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
   
   new_match_shooting <- new_match_urls |> 
+    set_names() |> 
     map_dfr(
-      possibly_scrape_fb_match_shooting
-    )
+      possibly_scrape_fb_match_shooting,
+      .id = 'MatchURL'
+    ) |> 
+    relocate(MatchURL, .before = 1)
+  
+  match_results <- load_match_results(
+    country = country,
+    tier = tier,
+    gender = gender,
+    season_end_year = season_end_years
+  )
   
   match_shooting <- bind_rows(
     existing_match_shooting,
     new_match_shooting
   ) |>
+    inner_join(
+      match_results |> 
+        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL)
+    ) |> 
     as_tibble()
   
-  attr(match_shooting, "scrape_timestamp") <- scrape_time_utc
+  attr(match_shooting, 'scrape_timestamp') <- scrape_time_utc
 
   write_worldfootballr_rds_and_csv(
     x = match_shooting, 
@@ -95,6 +110,7 @@ update_fb_match_shooting <- function(country, gender = "M", tier = "1st") {
 }
 
 params |> 
+  head(1) |> 
   mutate(
     data = pmap(
       list(

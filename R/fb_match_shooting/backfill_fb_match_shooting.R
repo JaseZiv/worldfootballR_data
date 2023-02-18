@@ -6,20 +6,20 @@ library(purrr)
 library(tibble)
 library(rlang)
 
-data_dir <- file.path("data", "fb_match_shooting")
-subdata_dir <- file.path(data_dir, "matches")
+data_dir <- file.path('data', 'fb_match_shooting')
+subdata_dir <- file.path(data_dir, 'matches')
 dir.create(data_dir, showWarnings = FALSE)
 dir.create(subdata_dir, showWarnings = FALSE)
 
-source(file.path("R", "fb_match_shooting", "shared_fb_match_shooting.R"))
+source(file.path('R', 'fb_match_shooting', 'shared_fb_match_shooting.R'))
 
 scrape_fb_match_shooting <- function(match_url, overwrite = FALSE) {
-  rds_path <- file.path(subdata_dir, sprintf("%s.rds", basename(match_url)))
+  rds_path <- file.path(subdata_dir, sprintf('%s.rds', basename(match_url)))
   if (file.exists(rds_path) & !overwrite) {
-    # message(sprintf("Returning pre-saved data for %s.", match_url))
+    # message(sprintf('Returning pre-saved data for %s.', match_url))
     return(read_rds(rds_path))
   }
-  message(sprintf("Scraping matches for %s.", match_url))
+  message(sprintf('Scraping matches for %s.', match_url))
   match_shooting <- fb_match_shooting(match_url)
   write_rds(match_shooting, rds_path)
   match_shooting
@@ -64,8 +64,8 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
   
   if (length(new_match_urls) == 0) {
     message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
-    scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
-    attr(existing_match_shooting, "scrape_timestamp") <- scrape_time_utc
+    scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
+    attr(existing_match_shooting, 'scrape_timestamp') <- scrape_time_utc
     write_rds(
       existing_match_shooting, 
       rds_path
@@ -73,12 +73,12 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
     return(invisible(existing_match_shooting))
   }
   
-  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
+  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
   new_match_shooting <- new_match_urls |> 
     set_names() |> 
     map_dfr(
       possibly_scrape_fb_match_shooting,
-      .id = "MatchURL"
+      .id = 'MatchURL'
     ) |> 
     relocate(MatchURL, .before = 1)
   
@@ -99,7 +99,7 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
     ) |> 
     as_tibble()
   
-  attr(match_shooting, "scrape_timestamp") <- scrape_time_utc
+  attr(match_shooting, 'scrape_timestamp') <- scrape_time_utc
   write_rds(
     match_shooting, 
     rds_path
@@ -127,10 +127,10 @@ local_data <- params |>
   )
 
 ## could just put this in the function, but i want to check locally before i upload
-source(file.path("R", "piggyback.R"))
+source(file.path('R', 'piggyback.R'))
 local_data |> 
   mutate(
-    name = sprintf("%s_%s_%s_match_shooting", country, gender, tier),
+    name = sprintf('%s_%s_%s_match_shooting', country, gender, tier),
     res = map2(
       data,
       name,
@@ -138,7 +138,7 @@ local_data |>
         write_worldfootballr_rds_and_csv(
           x = .x,
           name = .y,
-          tag = "fb_match_shooting"
+          tag = 'fb_match_shooting'
         )
       }
     )
