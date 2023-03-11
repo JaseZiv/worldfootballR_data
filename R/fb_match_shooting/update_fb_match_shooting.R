@@ -9,18 +9,16 @@ library(rlang)
 source(file.path('R', 'piggyback.R'))
 source(file.path('R', 'fb_match_shooting', 'shared_fb_match_shooting.R'))
 
-seasons <- read_csv(
+all_seasons <- read_csv(
   'https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv'
 )
 
-latest_seasons <- seasons |>
+seasons <- all_seasons |>
   semi_join(
     params,
     by = c('country', 'tier', 'gender')
   ) |> 
-  group_by(country, tier, gender) |>
-  slice_max(season_end_year) |> 
-  ungroup() |> 
+  filter(season_end_year >= 2017L) |> 
   distinct(
     country,
     gender,
@@ -81,6 +79,14 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
     ) |> 
     relocate(MatchURL, .before = 1)
   
+  season_end_years <- seasons |> 
+    filter(
+      country == !!country,
+      gender == !!gender,
+      tier == !!tier
+    ) |> 
+    pull(season_end_year)
+  
   match_results <- load_match_results(
     country = country,
     tier = tier,
@@ -97,7 +103,7 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
         select(Competition_Name, Gender, Country, Season_End_Year, MatchURL)
     ) |> 
     as_tibble()
-  
+
   attr(match_shooting, 'scrape_timestamp') <- scrape_time_utc
 
   write_worldfootballr_rds_and_csv(
@@ -110,7 +116,7 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
 }
 
 params |> 
-  head(1) |> 
+  tail(13) |> 
   mutate(
     data = pmap(
       list(
