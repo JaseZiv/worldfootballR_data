@@ -87,15 +87,21 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
     gender = gender,
     season_end_year = filtered_seasons
   )
-  
+
   match_shooting <- bind_rows(
     existing_match_shooting,
-    new_match_shooting
-  ) |>
-    inner_join(
-      match_results |> 
-        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL)
-    ) |> 
+    new_match_shooting |> 
+      inner_join(
+        match_results |> 
+          select(
+            Competition_Name, 
+            Gender,
+            Country, 
+            Season_End_Year, 
+            MatchURL
+          )
+      )
+  ) |> 
     as_tibble()
 
   attr(match_shooting, 'scrape_timestamp') <- scrape_time_utc
@@ -109,7 +115,7 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
   match_shooting
 }
 
-params |> 
+params |>
   mutate(
     data = pmap(
       list(
