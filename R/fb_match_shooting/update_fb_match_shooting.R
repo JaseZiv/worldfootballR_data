@@ -42,13 +42,15 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
   name <- sprintf('%s_%s_%s_match_shooting', country, gender, tier)
   message(sprintf('Updating %s.', name))
   
-  latest_season <- latest_seasons |> 
+  filtered_seasons <- seasons |> 
     filter(
       country == !!country,
       gender == !!gender,
       tier == !!tier
     ) |> 
     pull(season_end_year)
+  
+  latest_season <- max(filtered_seasons)
   
   match_urls <- fb_match_urls(
     country = country,
@@ -78,20 +80,12 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
       .id = 'MatchURL'
     ) |> 
     relocate(MatchURL, .before = 1)
-  
-  season_end_years <- seasons |> 
-    filter(
-      country == !!country,
-      gender == !!gender,
-      tier == !!tier
-    ) |> 
-    pull(season_end_year)
-  
+
   match_results <- load_match_results(
     country = country,
     tier = tier,
     gender = gender,
-    season_end_year = season_end_years
+    season_end_year = filtered_seasons
   )
   
   match_shooting <- bind_rows(
@@ -116,7 +110,6 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
 }
 
 params |> 
-  tail(13) |> 
   mutate(
     data = pmap(
       list(
