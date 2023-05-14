@@ -6,7 +6,7 @@ playing_time <- fb_big5_advanced_season_stats(season_end_year = 2023,
                                               stat_type = "playing_time",
                                               team_or_player = "player")
 
-tm <- get_player_market_values(country_name = c("England", "Spain", "France", "Italy", "Germany"),
+tm <- tm_player_market_values(country_name = c("England", "Spain", "France", "Italy", "Germany"),
                                start_year = 2022)
 
 
