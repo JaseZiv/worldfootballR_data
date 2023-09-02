@@ -1,10 +1,10 @@
 name: Scrape FBref match shooting
 
-# After fb_match_results runs
 on:
   schedule:
     - cron: "45 17 * 1-5,8-12 0,2,4"
-    
+  workflow_dispatch:
+
 jobs:
   update-fb-match-shooting:
     runs-on: macOS-latest
@@ -19,10 +19,3 @@ jobs:
         run: Rscript -e 'devtools::install_github("JaseZiv/worldfootballR")'
       - name: Update match results
         run: Rscript -e 'source(file.path("R", "fb_match_shooting", "update_fb_match_shooting.R"), echo = TRUE)'
-      - name: Commit
-        run: |
-          git config --global user.name 'JaseZiv'
-          git config --global user.email 'jaseziv83@gmail.com'
-          git add .
-          git commit -m 'updating fotmob match details' || echo "No changes to commit"
-          git push || echo "No changes to commit"
