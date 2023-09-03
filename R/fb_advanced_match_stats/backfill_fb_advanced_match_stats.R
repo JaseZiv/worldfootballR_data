@@ -114,10 +114,17 @@ backfill_fb_advanced_match_stats <- function(
       )
       
       res <- new_data |> 
-        dplyr::select(-dplyr::any_of(c("Competition_Name", "Gender", "Country", "Season_End_Year"))) |>
+        dplyr::select(-dplyr::any_of(c("Competition_Name", "Gender", "Country", "Tier", "Season_End_Year"))) |>
         dplyr::inner_join(
           match_results |> 
-            dplyr::select(Competition_Name, Gender, Country, Season_End_Year, MatchURL),
+            dplyr::transmute(
+              Competition_Name, 
+              Gender, 
+              Country, 
+              Tier = .env$tier,
+              Season_End_Year,
+              MatchURL
+            ),
           by = dplyr::join_by(MatchURL)
         ) |> 
         tibble::as_tibble()
