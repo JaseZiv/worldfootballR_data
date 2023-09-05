@@ -18,7 +18,6 @@ scrape_fb_match_summary <- function(url, data_dir, overwrite = FALSE) {
   
   suffix <- sprintf('for `url = "%s"`.', url)
   if (file.exists(rds_path) & !overwrite) {
-    # message(sprintf('Returning pre-saved data %s', suffix))
     return(readr::read_rds(rds_path))
   }
   message(sprintf('Scraping data %s', suffix))
@@ -55,7 +54,7 @@ backfill_fb_match_summary <- function(
   res <- purrr::map_dfr(
     season_end_years,
     function(season_end_year) {
-      # browser()
+
       season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
       if (season_end_year < last_season_end_year & file.exists(season_path)) {
         return(readRDS(season_path))
@@ -72,7 +71,7 @@ backfill_fb_match_summary <- function(
         warning(
           sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`.', country, gender, tier, season_end_year)
         )
-        return(data.frame())
+        return(tibble::tibble())
       }
 
       new_data <- match_urls |> 
