@@ -18,7 +18,6 @@ scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player, data_
   
   suffix <- sprintf('for `stat_type = "%s"`, `team_or_player = "%s", `url = "%s"`.', stat_type, team_or_player, url)
   if (file.exists(rds_path) & !overwrite) {
-    # message(sprintf('Returning pre-saved data %s', suffix))
     return(readr::read_rds(rds_path))
   }
   message(sprintf('Scraping data %s', suffix))
@@ -46,7 +45,6 @@ backfill_fb_advanced_match_stats <- function(
   message(sprintf('Updating %s.', rds_path))
   path_exists <- file.exists(rds_path)
   
-  
   if (isTRUE(path_exists)) {
     existing_data <- readr::read_rds(rds_path)
     existing_match_urls <- unique(existing_data$MatchURL)
@@ -60,12 +58,17 @@ backfill_fb_advanced_match_stats <- function(
     2019
   )
   
-  last_season_end_year <- ifelse(country == 'USA', 2022, 2023)
+  last_season_end_year <- ifelse(country %in% c('USA', 'BRA'), 2023, 2024)
   season_end_years <- first_season_end_year:last_season_end_year
   
   res <- purrr::map_dfr(
     season_end_years,
     function(season_end_year) {
+      
+      season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
+      if (season_end_year < last_season_end_year & file.exists(season_path)) {
+        return(readRDS(season_path))
+      }
       
       match_urls <- worldfootballR::fb_match_urls(
         country = country,
@@ -74,23 +77,12 @@ backfill_fb_advanced_match_stats <- function(
         season_end_year = season_end_year
       )
       
-      ## TODO: Read from season file
-      season_data_dir <- file.path(SUB_DATA_DIR, country, gender, tier, season_end_year)
-      # season_rds_path <- file.path(season_data_dir, sprintf('%s_%s_advanced_match_stats.rds', stat_type, team_or_player, season_end_year))
-      # message(sprintf('Updating %s.', rds_path))
-      # season_path_exists <- file.exists(season_rds_path)
-      # if (isTRUE(path_exists)) {
-      #   new_match_urls <- setdiff(match_urls, existing_match_urls)
-      # } else {
-      #   new_match_urls <- match_urls
-      # }
-      # 
-      # if (length(new_match_urls) == 0) {
-      #   message(
-      #     sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`, `stat_type = "%s"`, `team_or_player = "%s".', country, gender, tier, season_end_year, stat_type, team_or_player)
-      #   )
-      #   return(invisible(season_data))
-      # }
+      if (is.null(match_urls)) {
+        warning(
+          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`., `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, season_end_year, stat_type, team_or_player)
+        )
+        return(tibble::tibble())
+      }
       
       new_data <- match_urls |> 
         rlang::set_names() |> 
@@ -99,7 +91,7 @@ backfill_fb_advanced_match_stats <- function(
             url = .x,
             stat_type = stat_type, 
             team_or_player = team_or_player, 
-            data_dir = season_data_dir
+            data_dir = file.path(SUB_DATA_DIR, country, gender, tier, season_end_year)
           ),
           .id = 'MatchURL'
         ) |> 
@@ -114,7 +106,17 @@ backfill_fb_advanced_match_stats <- function(
       )
       
       res <- new_data |> 
-        dplyr::select(-dplyr::any_of(c("Competition_Name", "Gender", "Country", "Tier", "Season_End_Year"))) |>
+        dplyr::select(
+          -dplyr::any_of(
+            c(
+              "Competition_Name", 
+              "Gender", 
+              "Country", 
+              "Tier", 
+              "Season_End_Year"
+            )
+          )
+        ) |>
         dplyr::inner_join(
           match_results |> 
             dplyr::transmute(
@@ -128,12 +130,8 @@ backfill_fb_advanced_match_stats <- function(
           by = dplyr::join_by(MatchURL)
         ) |> 
         tibble::as_tibble()
-      
-      # write_rds(
-      #   res,
-      #   season_rds_path
-      # )
-      # invisible(res)
+      saveRDS(res, season_path)
+      res
     }
   )
   
@@ -152,9 +150,7 @@ local_data <- params |>
     team_or_player = 'player'
   ) |> 
   dplyr::filter(
-    country == 'ENG',
-    gender == 'M',
-    tier == '1st'
+    group == 'big5'
   ) |>
   dplyr::mutate(
     data = purrr::pmap(
