@@ -49,12 +49,22 @@ backfill_fb_match_summary <- function(
     2019
   )
   
-  last_season_end_year <- ifelse(country == 'USA', 2022, 2023)
+  last_season_end_year <- ifelse(country == 'USA', 2023, 2024)
   season_end_years <- first_season_end_year:last_season_end_year
-  
+  all_match_urls <- worldfootballR::fb_match_urls(
+    country = country,
+    tier = tier,
+    gender = gender,
+    season_end_year = season_end_year
+  )
   res <- purrr::map_dfr(
     season_end_years,
     function(season_end_year) {
+      season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
+      if (season_end_year < last_season_end_year & file.exists(season_path)) {
+        return(readRDS(season_path))
+      }
+      
       match_urls <- worldfootballR::fb_match_urls(
         country = country,
         tier = tier,
@@ -95,6 +105,8 @@ backfill_fb_match_summary <- function(
           by = dplyr::join_by(MatchURL)
         ) |> 
         tibble::as_tibble()
+      saveRDS(res, season_path)
+      res
     }
   )
   
