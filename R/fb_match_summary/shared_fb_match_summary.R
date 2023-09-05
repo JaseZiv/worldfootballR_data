@@ -11,7 +11,7 @@ params <- bind_rows(
     gender = 'M'
   ),
   '1st_F' = list(
-    country = c('ENG', 'USA', 'ESP'),
+    country = c('ENG', 'USA'),
     tier = '1st',
     gender = 'F'
   ),
