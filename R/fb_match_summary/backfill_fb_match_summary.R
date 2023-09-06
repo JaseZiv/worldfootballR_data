@@ -48,7 +48,7 @@ backfill_fb_match_summary <- function(
     2019
   )
   
-  last_season_end_year <- ifelse(country %in% c('USA', 'BRA'), 2023, 2024)
+  last_season_end_year <- lubridate::year(Sys.Date()) + 1L
   season_end_years <- first_season_end_year:last_season_end_year
 
   res <- purrr::map_dfr(
@@ -66,8 +66,8 @@ backfill_fb_match_summary <- function(
         gender = gender,
         season_end_year = season_end_year
       )
-      
-      if (is.null(match_urls)) {
+
+      if (length(match_urls) == 0) {
         warning(
           sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`.', country, gender, tier, season_end_year)
         )
@@ -122,6 +122,7 @@ backfill_fb_match_summary <- function(
 }
 
 local_data <- params |> 
+  filter(country == 'ENG', gender == 'F') |> 
   dplyr::mutate(
     data = purrr::pmap(
       list(
