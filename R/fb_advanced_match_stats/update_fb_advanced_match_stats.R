@@ -74,7 +74,7 @@ update_fb_advanced_match_stats <- function(
   
   if (length(new_match_urls) == 0) {
     message(
-      sprintf('No new match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`., `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, season_end_year, stat_type, team_or_player)
+      sprintf('No new match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, stat_type, team_or_player)
     )
     return(existing_data)
   }
