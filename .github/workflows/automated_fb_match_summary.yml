@@ -1,9 +1,6 @@
 name: Scrape FBref match summaries
 
 on:
-  push:
-    branches: 
-      - add-fb_advanced_match_stats
   schedule:
     - cron: "58 17 * 1-5,8-12 0,2,4"
     workflow_dispatch:
