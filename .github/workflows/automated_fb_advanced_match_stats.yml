@@ -3,7 +3,7 @@ name: Scrape FBref advanced match stats
 on:
   schedule:
     - cron: "13 18 * 1-5,8-12 0,2,4"
-    workflow_dispatch:
+  workflow_dispatch:
     
 jobs:
   update-fb-advanced-match-stats:
