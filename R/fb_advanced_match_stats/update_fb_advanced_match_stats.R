@@ -26,9 +26,13 @@ seasons <- all_seasons |>
     season_end_year
   )
 
-scrape_fb_advanced_match_stats <- function(match_url, stat_type, team_or_player) {
-  message(sprintf('Scraping matches for %s.', match_url))
-  fb_advanced_match_stats(match_url, stat_type = stat_type, team_or_player = team_or_player)
+scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player) {
+  message(sprintf('Scraping matches for %s.', url))
+  fb_advanced_match_stats(
+    url, 
+    stat_type = stat_type, 
+    team_or_player = team_or_player
+  )
 }
 
 possibly_scrape_fb_advanced_match_stats <- possibly(
@@ -81,7 +85,7 @@ update_fb_advanced_match_stats <- function(
   
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
   
-  new_match_summary <- new_match_urls |> 
+  new_data <- new_match_urls |> 
     set_names() |> 
     map_dfr(
       \(.x) possibly_scrape_fb_advanced_match_stats(
@@ -92,7 +96,7 @@ update_fb_advanced_match_stats <- function(
       .id = 'MatchURL'
     ) |> 
     relocate(MatchURL, .before = 1)
-  
+
   match_results <- load_match_results(
     country = country,
     tier = tier,
@@ -101,8 +105,8 @@ update_fb_advanced_match_stats <- function(
   )
   
   res <- bind_rows(
-    existing_match_summary,
-    new_match_summary |> 
+    existing_data,
+    new_data |> 
       inner_join(
         match_results |> 
           transmute(
@@ -112,7 +116,8 @@ update_fb_advanced_match_stats <- function(
             Tier = .env$tier,
             Season_End_Year, 
             MatchURL
-          )
+          ),
+        by = 'MatchURL'
       )
   ) |> 
     as_tibble()
@@ -125,7 +130,7 @@ update_fb_advanced_match_stats <- function(
     tag = fb_advanced_match_stats_tag
   )
   
-  match_summary
+  res
 }
 
 params |>  
