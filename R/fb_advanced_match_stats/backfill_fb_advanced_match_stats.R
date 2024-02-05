@@ -38,7 +38,7 @@ backfill_fb_advanced_match_stats <- function(
     tier = '1st', 
     group = 'big5',
     stat_type = 'summary', 
-    team_or_player = 'player'
+    team_or_player = 'team'
 ) {
   
   rds_path <- file.path(PARENT_DATA_DIR, sprintf('%s_%s_%s_%s_%s_advanced_match_stats.rds', country, gender, tier, stat_type, team_or_player))
@@ -147,11 +147,11 @@ backfill_fb_advanced_match_stats <- function(
 local_data <- params |> 
   tidyr::crossing(
     stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
-    team_or_player = 'player'
+    team_or_player = 'team'
   ) |> 
   # dplyr::filter(
-  #   group == 'big5'
-  #   # country == 'ENG'
+  #   # group == 'big5'
+  #   country == 'USA'
   # ) |>
   dplyr::mutate(
     data = purrr::pmap(

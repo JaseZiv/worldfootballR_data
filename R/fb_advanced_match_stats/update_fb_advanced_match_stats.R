@@ -136,7 +136,7 @@ update_fb_advanced_match_stats <- function(
 params |>  
   crossing(
   stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
-  team_or_player = 'player'
+  team_or_player = c('player', 'team')
 ) |> 
   mutate(
     data = pmap(
