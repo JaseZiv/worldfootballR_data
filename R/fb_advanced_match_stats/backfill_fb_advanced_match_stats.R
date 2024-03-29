@@ -21,9 +21,9 @@ scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player, data_
     return(readr::read_rds(rds_path))
   }
   message(sprintf('Scraping data %s', suffix))
-  stats <- worldfootballR::fb_advanced_match_stats(url, stat_type = stat_type, team_or_player = team_or_player)
-  readr::write_rds(stats, rds_path)
-  stats
+  res <- worldfootballR::fb_advanced_match_stats(url, stat_type = stat_type, team_or_player = team_or_player)
+  readr::write_rds(res, rds_path)
+  res
 }
 
 possibly_scrape_fb_advanced_match_stats <- purrr::possibly(
@@ -58,15 +58,18 @@ backfill_fb_advanced_match_stats <- function(
     2019
   )
   
-  last_season_end_year <- lubridate::year(Sys.Date()) + 1L
+  ## special logic if this is the MLS before Feb.
+  last_season_end_year <- lubridate::year(Sys.Date()) + ifelse(country == 'ENG' & gender == 'M', 0L, 0L)
   season_end_years <- first_season_end_year:last_season_end_year
   
   res <- purrr::map_dfr(
     season_end_years,
     function(season_end_year) {
       
-      season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
-      if (season_end_year < last_season_end_year & file.exists(season_path)) {
+      message(sprintf('Scraping %s.', season_end_year))
+      season_path <- file.path(SUB_DATA_DIR, country, gender, tier, season_end_year, paste0(stat_type, '-', team_or_player, '.rds'))
+      long_ago <- season_end_year < last_season_end_year
+      if (long_ago & file.exists(season_path)) {
         return(readRDS(season_path))
       }
       
@@ -79,7 +82,7 @@ backfill_fb_advanced_match_stats <- function(
       
       if (length(match_urls) == 0) {
         warning(
-          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`., `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, season_end_year, stat_type, team_or_player)
+          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`, `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, season_end_year, stat_type, team_or_player)
         )
         return(tibble::tibble())
       }
@@ -149,10 +152,6 @@ local_data <- params |>
     stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
     team_or_player = 'team'
   ) |> 
-  # dplyr::filter(
-  #   # group == 'big5'
-  #   country == 'USA'
-  # ) |>
   dplyr::mutate(
     data = purrr::pmap(
       list(

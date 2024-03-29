@@ -6,23 +6,25 @@ library(purrr)
 library(tibble)
 library(rlang)
 
-data_dir <- file.path('data', 'fb_match_shooting')
-subdata_dir <- file.path(data_dir, 'matches')
-dir.create(data_dir, showWarnings = FALSE)
-dir.create(subdata_dir, showWarnings = FALSE)
+PARENT_DATA_DIR <- file.path('data', 'fb_match_shooting')
+SUB_DATA_DIR <- file.path(PARENT_DATA_DIR, 'match_shooting')
+dir.create(PARENT_DATA_DIR, showWarnings = FALSE)
+dir.create(SUB_DATA_DIR, showWarnings = FALSE)
 
 source(file.path('R', 'fb_match_shooting', 'shared_fb_match_shooting.R'))
 
-scrape_fb_match_shooting <- function(match_url, overwrite = FALSE) {
-  rds_path <- file.path(subdata_dir, sprintf('%s.rds', basename(match_url)))
+scrape_fb_match_shooting <- function(url, data_dir, overwrite = FALSE) {
+  rds_path <- file.path(data_dir, sprintf('%s.rds', basename(url)))
+  if (!dir.exists(dirname(rds_path))) { dir.create(dirname(rds_path), showWarnings = FALSE, recursive = TRUE) }
+  
+  suffix <- sprintf('for `url = "%s"`.', url)
   if (file.exists(rds_path) & !overwrite) {
-    # message(sprintf('Returning pre-saved data for %s.', match_url))
-    return(read_rds(rds_path))
+    return(readr::read_rds(rds_path))
   }
-  message(sprintf('Scraping matches for %s.', match_url))
-  match_shooting <- fb_match_shooting(match_url)
-  write_rds(match_shooting, rds_path)
-  match_shooting
+  message(sprintf('Scraping data %s', suffix))
+  res <- worldfootballR::fb_match_shooting(url)
+  readr::write_rds(res, rds_path)
+  res
 }
 
 possibly_scrape_fb_match_shooting <- possibly(
@@ -31,11 +33,15 @@ possibly_scrape_fb_match_shooting <- possibly(
   quiet = FALSE
 )
 
-backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', group = 'big5') {
+backfill_fb_match_shooting <- function(
+    country = 'ENG',
+    gender = 'M', 
+    tier = '1st', 
+    group = 'big5'
+) {
   
-  rds_path <- file.path(data_dir, sprintf('%s_%s_%s_match_shooting.rds', country, gender, tier))
+  rds_path <- file.path(PARENT_DATA_DIR, sprintf('%s_%s_%s_match_shooting.rds', country, gender, tier))
   message(sprintf('Updating %s.', rds_path))
-  path_exists <- file.exists(rds_path)
   
   first_season_end_year <- ifelse(
     group == 'big5',
@@ -43,74 +49,90 @@ backfill_fb_match_shooting <- function(country, gender = 'M', tier = '1st', grou
     2019
   )
   
-  # season_end_years <- first_season_end_year:2023
-  # season_end_years <- 2022
-  season_end_years <- ifelse(country == 'USA', 2021, 2022)
-  match_urls <- fb_match_urls(
-    country = country,
-    tier = tier,
-    gender = gender,
-    season_end_year = season_end_years
+  last_season_end_year <- lubridate::year(Sys.Date()) + 1L
+  season_end_years <- first_season_end_year:last_season_end_year
+  
+  res <- purrr::map_dfr(
+    season_end_years,
+    function(season_end_year) {
+      
+      season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
+      if (season_end_year < last_season_end_year & file.exists(season_path)) {
+        return(readRDS(season_path))
+      }
+      
+      match_urls <- worldfootballR::fb_match_urls(
+        country = country,
+        tier = tier,
+        gender = gender,
+        season_end_year = season_end_year
+      )
+      
+      if (length(match_urls) == 0) {
+        warning(
+          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`.', country, gender, tier, season_end_year)
+        )
+        return(tibble::tibble())
+      }
+      
+      new_data <- match_urls |> 
+        rlang::set_names() |> 
+        purrr::map_dfr(
+          \(.x) possibly_scrape_fb_match_shooting(
+            url = .x,
+            data_dir = file.path(SUB_DATA_DIR, country, gender, tier, season_end_year)
+          ),
+          .id = 'MatchURL'
+        ) |> 
+        dplyr::relocate(MatchURL, .before = 1)
+      
+      ## for the URLs
+      match_results <- worldfootballR::load_match_results(
+        country = country,
+        tier = tier,
+        gender = gender,
+        season_end_year = season_end_year
+      )
+      
+      res <- new_data |>
+        dplyr::inner_join(
+          match_results |> 
+            dplyr::transmute(
+              Competition_Name, 
+              Gender, 
+              Country, 
+              Tier = .env$tier,
+              Season_End_Year,
+              MatchURL
+            ),
+          by = dplyr::join_by(MatchURL)
+        ) |> 
+        tibble::as_tibble()
+      saveRDS(res, season_path)
+      res
+    }
   )
   
-  if (isTRUE(path_exists)) {
-    existing_match_shooting <- read_rds(rds_path)
-    existing_match_urls <- unique(existing_match_shooting$MatchURL)
-    new_match_urls <- setdiff(match_urls, existing_match_urls)
-  } else {
-    existing_match_shooting <- tibble()
-    new_match_urls <- match_urls
-  }
-  
-  if (length(new_match_urls) == 0) {
-    message(sprintf('Not updating data for `country = "%s"`, `gender = "%s"`, `tier = "%s"`.', country, gender, tier))
-    scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
-    attr(existing_match_shooting, 'scrape_timestamp') <- scrape_time_utc
-    write_rds(
-      existing_match_shooting, 
-      rds_path
-    )
-    return(invisible(existing_match_shooting))
-  }
-  
-  scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
-  new_match_shooting <- new_match_urls |> 
-    set_names() |> 
-    map_dfr(
-      possibly_scrape_fb_match_shooting,
-      .id = 'MatchURL'
-    ) |> 
-    relocate(MatchURL, .before = 1)
-  
-  match_results <- load_match_results(
-    country = country,
-    tier = tier,
-    gender = gender,
-    season_end_year = season_end_years
-  )
-  
-  match_shooting <- bind_rows(
-    existing_match_shooting,
-    new_match_shooting
-  ) |>
-    inner_join(
-      match_results |> 
-        select(Competition_Name, Gender, Country, Season_End_Year, MatchURL)
-    ) |> 
-    as_tibble()
-  
-  attr(match_shooting, 'scrape_timestamp') <- scrape_time_utc
-  write_rds(
-    match_shooting, 
+  attr(res, 'scrape_timestamp') <- as.POSIXlt(Sys.time(), tz = 'UTC')
+  readr::write_rds(
+    res, 
     rds_path
   )
   
-  invisible(match_shooting)
+  invisible(res)
 }
 
+
 local_data <- params |> 
-  mutate(
-    data = pmap(
+  # dplyr::filter(
+  #   (
+  #     country == 'ENG' &
+  #     gender == 'M' &
+  #     tier == '1st'
+  #   )
+  # ) |> 
+  dplyr::mutate(
+    data = purrr::pmap(
       list(
         country,
         gender,
