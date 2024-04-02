@@ -2,12 +2,12 @@ library(worldfootballR)
 library(tidyverse)
 library(here)
 
-playing_time <- fb_big5_advanced_season_stats(season_end_year = 2023,
+playing_time <- fb_big5_advanced_season_stats(season_end_year = 2024,
                                               stat_type = "playing_time",
                                               team_or_player = "player")
 
 tm <- tm_player_market_values(country_name = c("England", "Spain", "France", "Italy", "Germany"),
-                               start_year = 2022)
+                               start_year = 2023)
 
 
 
@@ -42,9 +42,24 @@ tm_unique <- tm %>%
 # joined_primary <- fbref %>% select(Player, Born, Url) %>% distinct(Url, .keep_all = T) %>%
 #   left_join(tm %>% select(player_name, player_dob, player_url) %>% distinct(player_url, .keep_all = T), by = c("Player" = "player_name"))
 
-joined_primary <- fbref %>% select(Player, Born, Url) %>% distinct(Url, .keep_all = T) %>%
-  left_join(tm_unique %>% select(player_name, player_dob, player_url, player_position, tm_yob) %>% distinct(player_url, .keep_all = T),
-            by = c("Player" = "player_name", "Born" = "tm_yob"))
+# stringi::stri_trans_general("Audric Estimé", "latin-ascii")
+
+joined_primary <- fbref %>% 
+  select(Player, Born, Url) %>% 
+  mutate(Player = stringi::stri_trans_general(Player, "latin-ascii")) |> 
+  distinct(Url, .keep_all = T) %>%
+  left_join(
+    tm_unique %>% 
+      select(player_name, player_dob, player_url, player_position, tm_yob) %>%
+      mutate(player_name = stringi::stri_trans_general(player_name, "latin-ascii")) |> 
+      distinct(player_url, .keep_all = T),
+    by = c("Player" = "player_name", "Born" = "tm_yob")
+  )
+
+
+# joined_primary <- fbref %>% select(Player, Born, Url) %>% distinct(Url, .keep_all = T) %>%
+#   left_join(tm_unique %>% select(player_name, player_dob, player_url, player_position, tm_yob) %>% distinct(player_url, .keep_all = T),
+#             by = c("Player" = "player_name", "Born" = "tm_yob"))
 
 # arrange by player name
 joined_primary <- joined_primary %>% arrange(Player)
