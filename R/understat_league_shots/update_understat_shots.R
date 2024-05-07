@@ -28,6 +28,8 @@ for(each_league in leagues) {
     each_league_clean <- "Serie_A"
   } else if (each_league == "Ligue 1") {
     each_league_clean <- "Ligue_1"
+  } else {
+    each_league_clean <- each_league
   }
   
   # first we want to get the current season:
