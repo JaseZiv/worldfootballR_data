@@ -23,16 +23,16 @@ for(each_league in leagues) {
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = "UTC")
   
   if(each_league == "La liga") {
-    each_league <- "La_liga"
+    each_league_clean <- "La_liga"
   } else if (each_league == "Serie A") {
-    each_league <- "Serie_A"
+    each_league_clean <- "Serie_A"
   } else if (each_league == "Ligue 1") {
-    each_league <- "Ligue_1"
+    each_league_clean <- "Ligue_1"
   }
   
   # first we want to get the current season:
   main_url <- "https://understat.com/"
-  page_url <- paste0(main_url, "league/", each_league)
+  page_url <- paste0(main_url, "league/", each_league_clean)
   page <-  tryCatch( .get_understat_json(page_url), error = function(e) NA)
   
   season_element <- page %>% rvest::html_nodes(xpath = '//*[@name="season"]') %>%
