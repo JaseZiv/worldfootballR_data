@@ -147,11 +147,18 @@ backfill_fb_advanced_match_stats <- function(
   invisible(res)
 }
 
+# existing_assets <- piggyback::pb_list('JaseZiv/worldfootballR_data', tag = 'fb_advanced_match_stats')
+# existing_files <- existing_assets |> tibble::as_tibble() |> dplyr::filter(tools::file_ext(file_name) == 'rds') |> dplyr::distinct(file_name)
 local_data <- params |> 
   tidyr::crossing(
     stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
-    team_or_player = 'team'
+    team_or_player = c('team', 'player')
   ) |> 
+  dplyr::filter(country == 'ITA', tier == '1st', stat_type == 'defense', team_or_player == 'player') |> 
+  # dplyr::mutate(
+  #   file_name = sprintf('%s_%s_%s_%s_%s_advanced_match_stats.rds', country, gender, tier, stat_type, team_or_player)
+  # ) |> 
+  # dplyr::anti_join(existing_files)
   dplyr::mutate(
     data = purrr::pmap(
       list(

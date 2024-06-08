@@ -48,7 +48,7 @@ update_fb_advanced_match_stats <- function(
     tier = '1st', 
     stat_type = 'summary', 
     team_or_player = 'player'
-  ) {
+) {
   name <- sprintf('%s_%s_%s_%s_%s_advanced_match_stats', country, gender, tier, stat_type, team_or_player)
   message(sprintf('Updating %s.', name))
   
@@ -68,7 +68,7 @@ update_fb_advanced_match_stats <- function(
     gender = gender,
     season_end_year = latest_season
   )
-
+  
   existing_data <- read_worldfootballr_rds(
     name = name, 
     tag = fb_advanced_match_stats_tag
@@ -96,7 +96,7 @@ update_fb_advanced_match_stats <- function(
       .id = 'MatchURL'
     ) |> 
     relocate(MatchURL, .before = 1)
-
+  
   match_results <- load_match_results(
     country = country,
     tier = tier,
@@ -135,9 +135,13 @@ update_fb_advanced_match_stats <- function(
 
 params |>  
   crossing(
-  stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
-  team_or_player = c('player', 'team')
-) |> 
+    stat_type = factor(levels = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper')),
+    team_or_player = factor(levels = c('team', 'player'))
+  ) |> 
+  arrange(
+    stat_type,
+    team_or_player
+  ) |> 
   mutate(
     data = pmap(
       list(
