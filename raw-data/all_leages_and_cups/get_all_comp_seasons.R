@@ -149,7 +149,7 @@ get_league_seasons_url <- function() {
     dplyr::left_join(competitions, ., by = c("comp_url" = "league_url")) %>% 
     janitor::clean_names() %>%
     # want to keep the big five leagues combined, but not the individual leagues (these would be duplicated if kept in)
-    dplyr::mutate(filter_out = dplyr::case_when(
+    dplyr::mutate(filter_out = dplyr::case_when( 
       str_detect(competition_type, "Big 5") & !str_detect(competition_name, "Big 5 ") ~ "Y",
       TRUE ~ "N"
     )) %>% 

@@ -142,7 +142,7 @@ backfill_historical_results <- function(country_collect) {
   
   fixtures_df <- seasons %>%
     # filtering out things that aren't domestic leagues:
-    dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Leagues"),
+    dplyr::filter(stringr::str_detect(.data[["competition_type"]], "Cups"),
                   tier != "",
                   !is.na(.data[["country"]])) %>% 
     # get seasons that are only for the country selected
@@ -205,4 +205,52 @@ for(each_country in countries_to_get){
 
 
 
+# competition_names_to_get <- seasons |> 
+#   filter(is.na(country)) |> 
+#   filter(governing_body != 'FIFA') |> 
+#   pull(governing_body) |> 
+#   unique()
+
+seasons <- readr::read_csv(here::here("raw-data", "all_leages_and_cups", "all_competitions.csv"))
+seasons
+
+backfill_historical_international_results <- function(governing_body_to_collect) {
+  fixtures_df <- seasons |> 
+    dplyr::filter(governing_body == governing_body_to_collect) |> 
+    # dplyr::filter(is.na(.data[["country"]])) |> 
+    dplyr::arrange(desc(.data[["season_end_year"]]))
+  
+  fixtures_urls <- fixtures_df %>% 
+    dplyr::pull(.data[["fixtures_url"]]) %>% 
+    unique()
+
+  all_results <- data.frame()
+  for(each_fixture in 1:length(fixtures_urls)) {
+    print(paste0("Scraping URL ", each_fixture, " of ", length(fixtures_urls)))
+    df <- tryCatch(worldfootballR::.get_each_season_results(fixture_url = fixtures_urls[each_fixture], time_pause = 4), error = function(e) data.frame())
+    
+    all_results <- bind_rows(all_results, df)
+  }
+  
+  all_results <- fixtures_df %>%
+    dplyr::select(
+      Competition_Name=.data[["competition_name"]], 
+      Gender=.data[["gender"]], 
+      Country=.data[["country"]],
+      Season_End_Year=.data[["season_end_year"]],
+      Tier=.data[["tier"]], 
+      .data[["seasons_urls"]], 
+      .data[["fixtures_url"]]
+    ) %>%
+    dplyr::right_join(all_results, by = c("fixtures_url" = "fixture_url")) %>%
+    dplyr::select(-.data[["seasons_urls"]], -.data[["fixtures_url"]]) %>%
+    dplyr::mutate(Date = lubridate::ymd(.data[["Date"]])) %>%
+    dplyr::arrange(.data[["Country"]], .data[["Competition_Name"]], .data[["Gender"]], .data[["Season_End_Year"]], .data[["Wk"]], .data[["Date"]], .data[["Time"]]) %>% 
+    dplyr::distinct(.keep_all = T)
+  
+  # return(all_results)
+  
+  # saveRDS(all_results, here("data", "match_results", paste0(country_collect, "_match_results.rds")))
+  write_worldfootballr(x=all_results, name = paste0(governing_body_to_collect, "_match_results"), tag = "match_results", ext = "rds")
+}
 
