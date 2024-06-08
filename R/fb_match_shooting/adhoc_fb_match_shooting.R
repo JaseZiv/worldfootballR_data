@@ -9,6 +9,39 @@ library(rlang)
 source(file.path('R', 'piggyback.R'))
 source(file.path('R', 'fb_match_shooting', 'shared_fb_match_shooting.R'))
 
+## fix tier ----
+fb_match_shooting_tag <- 'fb_match_shooting'
+params |>
+  filter(group != 'non_domestic') |> 
+  mutate(
+    data = pmap(
+      list(
+        country,
+        gender,
+        tier
+      ),
+      \(.country, .gender, .tier) {
+          name <- sprintf('%s_%s_%s_match_shooting', .country, .gender, .tier)
+          message(sprintf('Updating %s.', name))
+          existing_match_shooting <- read_worldfootballr_rds(
+            name = name, 
+            tag = fb_match_shooting_tag
+          )
+
+          if (all(!is.na(existing_match_shooting$Tier))) {
+            return(existing_match_shooting)
+          }
+          existing_match_shooting |> 
+            mutate(Tier = coalesce(Tier, .tier)) |>
+            write_worldfootballr_rds_and_csv(
+              name = name,
+              tag = fb_match_shooting_tag
+            )
+      }
+    )
+  )
+
+## fix some incomplete matches ----
 fb_match_shooting_tag <- 'fb_match_shooting'
 country <- 'ENG'
 gender <- 'M'
