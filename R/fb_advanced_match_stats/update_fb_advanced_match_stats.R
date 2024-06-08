@@ -41,6 +41,11 @@ possibly_scrape_fb_advanced_match_stats <- possibly(
   quiet = FALSE
 )
 
+slowly_possibly_scrape_fb_advanced_match_stats <- slowly(
+  possibly_scrape_fb_advanced_match_stats, 
+  rate = rate_delay(pause = 3)
+)
+
 fb_advanced_match_stats_tag <- 'fb_advanced_match_stats'
 update_fb_advanced_match_stats <- function(
     country = 'ENG', 
@@ -88,7 +93,7 @@ update_fb_advanced_match_stats <- function(
   new_data <- new_match_urls |> 
     set_names() |> 
     map_dfr(
-      \(.x) possibly_scrape_fb_advanced_match_stats(
+      \(.x) slowly_possibly_scrape_fb_advanced_match_stats(
         url = .x,
         stat_type = stat_type, 
         team_or_player = team_or_player
