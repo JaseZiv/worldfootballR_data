@@ -64,12 +64,19 @@ backfill_fb_match_summary <- function(
         country = country,
         tier = tier,
         gender = gender,
-        season_end_year = season_end_year
+        season_end_year = season_end_year,
+        non_dom_league_url = non_dom_league_url
       )
 
       if (length(match_urls) == 0) {
         warning(
-          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`.', country, gender, tier, season_end_year)
+          sprintf(
+            'No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`, `non_dom_league_url = %s`.', 
+            country, 
+            gender, tier, 
+            season_end_year, 
+            non_dom_league_url
+          )
         )
         return(tibble::tibble())
       }
@@ -122,7 +129,8 @@ backfill_fb_match_summary <- function(
 }
 
 local_data <- params |> 
-  filter(country == 'ENG', gender == 'F') |> 
+  # filter(country == 'ENG', gender == 'F') |> 
+  dplyr::filter(group == 'non_domestic') |> 
   dplyr::mutate(
     data = purrr::pmap(
       list(

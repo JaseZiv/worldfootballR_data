@@ -20,5 +20,13 @@ params <- bind_rows(
     tier = '2nd',
     gender = 'M'
   ),
+  'non_domestic' = list(
+    gender = 'M',
+    tier = '1st',
+    non_dom_league_url = c(
+      'https://fbref.com/en/comps/8/history/Champions-League-Seasons',
+      'https://fbref.com/en/comps/19/history/Europa-League-Seasons'
+    )
+  ),
   .id = 'group'
 )
