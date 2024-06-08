@@ -93,10 +93,11 @@ update_fb_match_shooting <- function(country, gender = 'M', tier = '1st') {
     new_match_shooting |> 
       inner_join(
         match_results |> 
-          select(
+          transmute(
             Competition_Name, 
             Gender,
             Country, 
+            Tier = .env$tier,
             Season_End_Year, 
             MatchURL
           )
