@@ -22,7 +22,7 @@ library(rvest)
 .get_competitions <- function() {
   
   main_url <- "https://fbref.com"
-  Sys.sleep(3)
+  Sys.sleep(7)
   comps_page <- .load_page("https://fbref.com/en/comps/")
   
   
@@ -79,7 +79,7 @@ get_league_seasons_url <- function() {
   get_urls <- function(league_url) {
     # Sys.sleep(runif(1, min=4, max=10))
     print(glue::glue("Scraping season URLs from {league_url}"))
-    Sys.sleep(3)
+    Sys.sleep(7)
     league_page <- .load_page(league_url)
     
     seasons <- league_page %>%
