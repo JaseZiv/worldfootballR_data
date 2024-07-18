@@ -2,11 +2,10 @@
 name: Store match results
 
 # Controls when the action will run - have set this to run at: 
-# 02:00 on Tuesday, Thursday, and Sunday in 
-# January through December. 
+# 02:00 on Tuesday, Thursday, and Sunday
 on:
   schedule:
-    - cron: "15 17 * 1-12 0,2,4"
+    - cron: "15 17 * * 0,2,4"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel

@@ -2,11 +2,10 @@
 name: Store advanced stats
 
 # Controls when the action will run - have set this to run at: 
-# 02:15 on Tuesday, Thursday, and Sunday in 
-# January, February, March, April, May, August, September, October, November, and December. 
+# 02:15 on Tuesday, Thursday, and Sunday
 on:
   schedule:
-    - cron: "30 17 * 1-5,8-12 0,2,4"
+    - cron: "30 17 * * 0,2,4"
 
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
