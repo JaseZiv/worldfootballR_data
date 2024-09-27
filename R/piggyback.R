@@ -29,7 +29,7 @@ write_worldfootballr <- function(x, name, tag, ext = c("rds", "csv")) {
 
 write_worldfootballr_rds_and_csv <- function(x, name, tag) {
   walk(
-    c("csv", "rds"),
+    c("rds", "csv"),
     ~write_worldfootballr(
       x = x,
       name = name,

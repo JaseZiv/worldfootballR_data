@@ -20,7 +20,7 @@ scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player, data_
   if (file.exists(rds_path) & !overwrite) {
     return(readr::read_rds(rds_path))
   }
-  message(sprintf('Scraping data %s', suffix))
+  message(sprintf('%s: Scraping data %s', Sys.time(), suffix))
   res <- worldfootballR::fb_advanced_match_stats(url, stat_type = stat_type, team_or_player = team_or_player)
   readr::write_rds(res, rds_path)
   res
@@ -29,6 +29,12 @@ scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player, data_
 possibly_scrape_fb_advanced_match_stats <- purrr::possibly(
   scrape_fb_advanced_match_stats, 
   otherwise = tibble::tibble(),
+  quiet = FALSE
+)
+
+slowly_possibly_scrape_fb_advanced_match_stats <- purrr::slowly(
+  possibly_scrape_fb_advanced_match_stats, 
+  rate = purrr::rate_delay(pause = 5),
   quiet = FALSE
 )
 
@@ -42,7 +48,7 @@ backfill_fb_advanced_match_stats <- function(
 ) {
   
   rds_path <- file.path(PARENT_DATA_DIR, sprintf('%s_%s_%s_%s_%s_advanced_match_stats.rds', country, gender, tier, stat_type, team_or_player))
-  message(sprintf('Updating %s.', rds_path))
+  message(sprintf('%s: Updating %s.', Sys.time(), rds_path))
   path_exists <- file.exists(rds_path)
   
   if (isTRUE(path_exists)) {
@@ -66,13 +72,13 @@ backfill_fb_advanced_match_stats <- function(
     season_end_years,
     function(season_end_year) {
       
-      message(sprintf('Scraping %s.', season_end_year))
+      message(sprintf('%s: Scraping %s.', Sys.time(), season_end_year))
       season_path <- file.path(SUB_DATA_DIR, country, gender, tier, season_end_year, paste0(stat_type, '-', team_or_player, '.rds'))
       long_ago <- season_end_year < last_season_end_year
       if (long_ago & file.exists(season_path)) {
         return(readRDS(season_path))
       }
-      
+
       match_urls <- worldfootballR::fb_match_urls(
         country = country,
         tier = tier,
@@ -82,7 +88,7 @@ backfill_fb_advanced_match_stats <- function(
       
       if (length(match_urls) == 0) {
         warning(
-          sprintf('No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`, `stat_type = "%s"`, `team_or_player = "%s"`', country, gender, tier, season_end_year, stat_type, team_or_player)
+          sprintf('%s: No match URLs for `country = "%s"`, `gender = "%s"`, `tier = "%s"`, `season_end_year = %s`, `stat_type = "%s"`, `team_or_player = "%s"`', Sys.time(), country, gender, tier, season_end_year, stat_type, team_or_player)
         )
         return(tibble::tibble())
       }
@@ -137,7 +143,7 @@ backfill_fb_advanced_match_stats <- function(
       res
     }
   )
-  
+
   attr(res, 'scrape_timestamp') <- as.POSIXlt(Sys.time(), tz = 'UTC')
   readr::write_rds(
     res, 
@@ -152,9 +158,13 @@ backfill_fb_advanced_match_stats <- function(
 local_data <- params |> 
   tidyr::crossing(
     stat_type = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper'),
-    team_or_player = c('team', 'player')
+    # stat_type = 'defense',
+    # team_or_player = c('team') # , 'player')
+    team_or_player = 'player'
   ) |> 
-  dplyr::filter(country == 'ITA', tier == '1st', stat_type == 'defense', team_or_player == 'player') |> 
+  dplyr::filter(country %in% c('ENG')) |> 
+  # dplyr::filter(country %in% c('ENG', 'ESP')) |> 
+  # dplyr::filter(country == 'ITA', tier == '1st', stat_type == 'defense', team_or_player == 'player') |> 
   # dplyr::mutate(
   #   file_name = sprintf('%s_%s_%s_%s_%s_advanced_match_stats.rds', country, gender, tier, stat_type, team_or_player)
   # ) |> 

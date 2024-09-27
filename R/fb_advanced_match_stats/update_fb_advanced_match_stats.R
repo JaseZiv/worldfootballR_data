@@ -3,23 +3,23 @@ library(tidyr)
 library(dplyr)
 library(readr)
 library(purrr)
-library(tibble)
+library(tibble::tibble)
 library(rlang)
 
 source(file.path('R', 'piggyback.R'))
 source(file.path('R', 'fb_advanced_match_stats', 'shared_fb_advanced_match_stats.R'))
 
-all_seasons <- read_csv(
+all_seasons <- readr::read_csv(
   'https://raw.githubusercontent.com/JaseZiv/worldfootballR_data/master/raw-data/all_leages_and_cups/all_competitions.csv'
 )
 
 seasons <- all_seasons |>
-  semi_join(
+  dplyr::semi_join(
     params,
     by = c('country', 'tier', 'gender')
   ) |> 
-  filter(season_end_year >= 2017L) |> 
-  distinct(
+  dplyr::filter(season_end_year >= 2017L) |> 
+  dplyr::distinct(
     country,
     gender,
     tier,
@@ -28,18 +28,25 @@ seasons <- all_seasons |>
 
 scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player) {
   message(sprintf('Scraping matches for %s.', url))
-  fb_advanced_match_stats(
+  worldfootballR::fb_advanced_match_stats(
     url, 
     stat_type = stat_type, 
     team_or_player = team_or_player
   )
 }
 
-possibly_scrape_fb_advanced_match_stats <- possibly(
+possibly_scrape_fb_advanced_match_stats <- purrr::possibly(
   scrape_fb_advanced_match_stats, 
-  otherwise = tibble(),
+  otherwise = tibble::tibble(),
   quiet = FALSE
 )
+
+slowly_possibly_scrape_fb_advanced_match_stats <- purrr::slowly(
+  possibly_scrape_fb_advanced_match_stats, 
+  rate = purrr::rate_delay(pause = 5),
+  quiet = FALSE
+)
+
 
 fb_advanced_match_stats_tag <- 'fb_advanced_match_stats'
 update_fb_advanced_match_stats <- function(
@@ -53,16 +60,16 @@ update_fb_advanced_match_stats <- function(
   message(sprintf('Updating %s.', name))
   
   filtered_seasons <- seasons |> 
-    filter(
+    dplyr::filter(
       country == !!country,
       gender == !!gender,
       tier == !!tier
     ) |> 
-    pull(season_end_year)
+    dplyr::pull(season_end_year)
   
   latest_season <- max(filtered_seasons)
   
-  match_urls <- fb_match_urls(
+  match_urls <- worldfootballR::fb_match_urls(
     country = country,
     tier = tier,
     gender = gender,
@@ -86,30 +93,30 @@ update_fb_advanced_match_stats <- function(
   scrape_time_utc <- as.POSIXlt(Sys.time(), tz = 'UTC')
   
   new_data <- new_match_urls |> 
-    set_names() |> 
-    map_dfr(
-      \(.x) possibly_scrape_fb_advanced_match_stats(
+    rlang::set_names() |> 
+    purrr::map_dfr(
+      \(.x) slowly_possibly_scrape_fb_advanced_match_stats(
         url = .x,
         stat_type = stat_type, 
         team_or_player = team_or_player
       ),
       .id = 'MatchURL'
     ) |> 
-    relocate(MatchURL, .before = 1)
+    dplyr::relocate(MatchURL, .before = 1)
   
-  match_results <- load_match_results(
+  match_results <- worldfootballR::load_match_results(
     country = country,
     tier = tier,
     gender = gender,
     season_end_year = filtered_seasons
   )
   
-  res <- bind_rows(
+  res <- dplyr::bind_rows(
     existing_data,
     new_data |> 
-      inner_join(
+      dplyr::inner_join(
         match_results |> 
-          transmute(
+          dplyr::transmute(
             Competition_Name, 
             Gender,
             Country, 
@@ -120,7 +127,7 @@ update_fb_advanced_match_stats <- function(
         by = 'MatchURL'
       )
   ) |> 
-    as_tibble()
+    tibble::tibble::as_tibble()
   
   attr(res, 'scrape_timestamp') <- scrape_time_utc
   
@@ -133,17 +140,33 @@ update_fb_advanced_match_stats <- function(
   res
 }
 
-params |>  
-  crossing(
-    stat_type = factor(levels = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper')),
-    team_or_player = factor(levels = c('team', 'player'))
+current_time <- lubridate::now(tzone = 'UTC')
+current_wday <- lubridate::wday(current_time)
+current_hour <- lubridate::hour(current_time)
+
+team_or_players <- if (current_wday %% 2 == 0) {
+  'player'
+} else {
+  'team'
+}
+
+stat_types <- if (current_hour <= 12) {
+  c('summary', 'passing', 'passing_types')
+} else {
+  c('defense', 'possession', 'misc', 'keeper')
+}
+
+params |>
+  tidyr::crossing(
+    stat_type = factor(stat_types, levels = c('summary', 'passing', 'passing_types', 'defense', 'possession', 'misc', 'keeper')),
+    team_or_player = factor(team_or_players, levels = c('team', 'player'))
   ) |> 
-  arrange(
+  dplyr::arrange(
     stat_type,
     team_or_player
   ) |> 
-  mutate(
-    data = pmap(
+  dplyr::mutate(
+    data = purrr::pmap(
       list(
         country,
         gender,
