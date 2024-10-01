@@ -3,7 +3,7 @@ library(tidyr)
 library(dplyr)
 library(readr)
 library(purrr)
-library(tibble::tibble)
+library(tibble)
 library(rlang)
 
 source(file.path('R', 'piggyback.R'))
@@ -127,7 +127,7 @@ update_fb_advanced_match_stats <- function(
         by = 'MatchURL'
       )
   ) |> 
-    tibble::tibble::as_tibble()
+    tibble::as_tibble()
   
   attr(res, 'scrape_timestamp') <- scrape_time_utc
   
