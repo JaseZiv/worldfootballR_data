@@ -27,7 +27,14 @@ seasons <- all_seasons |>
   )
 
 scrape_fb_advanced_match_stats <- function(url, stat_type, team_or_player) {
-  message(sprintf('Scraping matches for %s.', url))
+  message(
+    sprintf(
+      'Scraping matches for url = `"%s"`,\n`stat_type = "%s"`, `team_or_player = "%s"`.', 
+      url, 
+      stat_type,
+      team_or_player
+    )
+  )
   worldfootballR::fb_advanced_match_stats(
     url, 
     stat_type = stat_type, 
@@ -44,9 +51,27 @@ possibly_scrape_fb_advanced_match_stats <- purrr::possibly(
 slowly_possibly_scrape_fb_advanced_match_stats <- purrr::slowly(
   possibly_scrape_fb_advanced_match_stats, 
   rate = purrr::rate_delay(pause = 5),
-  quiet = FALSE
+  quiet = TRUE
 )
 
+bind_with_type_coercion <- function(df1, df2) {
+  common_cols <- intersect(names(df1), names(df2))
+  
+  class_df1 <- sapply(df1[common_cols], class)
+  class_df2 <- sapply(df2[common_cols], class)
+  
+  cols_to_coerce <- common_cols[class_df1 != class_df2]
+  
+  if (length(cols_to_coerce) > 0) {
+    message(
+      sprintf('Coerceing these columns to strings: `%s`', paste0(cols_to_coerce, collapse = '`, `'))
+    )
+    df1[cols_to_coerce] <- lapply(df1[cols_to_coerce], as.character)
+    df2[cols_to_coerce] <- lapply(df2[cols_to_coerce], as.character)
+  }
+  
+  dplyr::bind_rows(df1, df2)
+}
 
 fb_advanced_match_stats_tag <- 'fb_advanced_match_stats'
 update_fb_advanced_match_stats <- function(
@@ -111,7 +136,7 @@ update_fb_advanced_match_stats <- function(
     season_end_year = filtered_seasons
   )
   
-  res <- dplyr::bind_rows(
+  res <- rbind(
     existing_data,
     new_data |> 
       dplyr::inner_join(

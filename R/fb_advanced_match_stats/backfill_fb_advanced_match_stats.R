@@ -35,7 +35,7 @@ possibly_scrape_fb_advanced_match_stats <- purrr::possibly(
 slowly_possibly_scrape_fb_advanced_match_stats <- purrr::slowly(
   possibly_scrape_fb_advanced_match_stats, 
   rate = purrr::rate_delay(pause = 5),
-  quiet = FALSE
+  quiet = TRUE
 )
 
 backfill_fb_advanced_match_stats <- function(
