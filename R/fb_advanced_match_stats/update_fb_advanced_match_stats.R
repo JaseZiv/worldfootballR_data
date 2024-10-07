@@ -136,7 +136,7 @@ update_fb_advanced_match_stats <- function(
     season_end_year = filtered_seasons
   )
   
-  res <- rbind(
+  res <- bind_with_type_coercion(
     existing_data,
     new_data |> 
       dplyr::inner_join(
