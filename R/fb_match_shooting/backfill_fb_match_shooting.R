@@ -29,7 +29,13 @@ scrape_fb_match_shooting <- function(url, data_dir, overwrite = FALSE) {
 
 possibly_scrape_fb_match_shooting <- possibly(
   scrape_fb_match_shooting, 
-  otherwise = tibble(),
+  otherwise = tibble::tibble(),
+  quiet = FALSE
+)
+
+slowly_possibly_scrape_fb_match_shooting <- purrr::slowly(
+  possibly_scrape_fb_match_shooting, 
+  rate = purrr::rate_delay(pause = 5),
   quiet = FALSE
 )
 
@@ -37,27 +43,35 @@ backfill_fb_match_shooting <- function(
     country = 'ENG',
     gender = 'M', 
     tier = '1st', 
-    group = 'big5'
+    group = 'big5',
+    season_end_years = 2025
 ) {
   
   rds_path <- file.path(PARENT_DATA_DIR, sprintf('%s_%s_%s_match_shooting.rds', country, gender, tier))
   message(sprintf('Updating %s.', rds_path))
   
-  first_season_end_year <- ifelse(
-    group == 'big5',
-    2018,
-    2019
-  )
-  
-  last_season_end_year <- lubridate::year(Sys.Date()) + 1L
-  season_end_years <- first_season_end_year:last_season_end_year
+  if (is.null(season_end_years)) {
+    first_season_end_year <- ifelse(
+      group == 'big5',
+      2018,
+      2019
+    )
+    
+    last_season_end_year <- lubridate::year(Sys.Date()) + 1L
+    season_end_years <- first_season_end_year:last_season_end_year
+  } else {
+    last_season_end_year <- max(season_end_years)
+  }
   
   res <- purrr::map_dfr(
     season_end_years,
     function(season_end_year) {
       
       season_path <- file.path(SUB_DATA_DIR, country, gender, tier, paste0(season_end_year, '.rds'))
-      if (season_end_year < last_season_end_year & file.exists(season_path)) {
+      # if (season_end_year < last_season_end_year & file.exists(season_path)) {
+      #   return(readRDS(season_path))
+      # }
+      if (file.exists(season_path)) {
         return(readRDS(season_path))
       }
       
@@ -78,7 +92,7 @@ backfill_fb_match_shooting <- function(
       new_data <- match_urls |> 
         rlang::set_names() |> 
         purrr::map_dfr(
-          \(.x) possibly_scrape_fb_match_shooting(
+          \(.x) slowly_possibly_scrape_fb_match_shooting(
             url = .x,
             data_dir = file.path(SUB_DATA_DIR, country, gender, tier, season_end_year)
           ),
@@ -122,15 +136,15 @@ backfill_fb_match_shooting <- function(
   invisible(res)
 }
 
-
 local_data <- params |> 
   # dplyr::filter(
   #   (
-  #     country == 'ENG' &
+  #     # country == 'ENG' &
+  #     group != 'big5' &
   #     gender == 'M' &
   #     tier == '1st'
   #   )
-  # ) |> 
+  # ) |>
   dplyr::mutate(
     data = purrr::pmap(
       list(
@@ -143,26 +157,28 @@ local_data <- params |>
         country = ..1,
         gender = ..2,
         tier = ..3,
-        group = ..4
+        group = ..4,
+        season_end_years = NULL
       )
     )
   )
 
-## could just put this in the function, but i want to check locally before i upload
-source(file.path('R', 'piggyback.R'))
-local_data |> 
-  mutate(
-    name = sprintf('%s_%s_%s_match_shooting', country, gender, tier),
-    res = map2(
-      data,
-      name,
-      ~{
-        write_worldfootballr_rds_and_csv(
-          x = .x,
-          name = .y,
-          tag = 'fb_match_shooting'
-        )
-      }
-    )
-  )
 
+## could just put this in the function, but i want to check locally before i upload
+# source(file.path('R', 'piggyback.R'))
+# local_data |> 
+#   mutate(
+#     name = sprintf('%s_%s_%s_match_shooting', country, gender, tier),
+#     res = map2(
+#       data,
+#       name,
+#       ~{
+#         write_worldfootballr_rds_and_csv(
+#           x = .x,
+#           name = .y,
+#           tag = 'fb_match_shooting'
+#         )
+#       }
+#     )
+#   )
+# 
