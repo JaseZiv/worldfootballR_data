@@ -2,8 +2,8 @@ library(purrr)
 library(readr)
 library(piggyback)
 
-write_csv2 <- partial(
-  write_csv,
+write_csv2 <- purrr::partial(
+  readr::write_csv,
   na = "",
   ... = 
 )
@@ -16,11 +16,11 @@ write_worldfootballr <- function(x, name, tag, ext = c("rds", "csv")) {
   path <- file.path(dir, basename)
   f <- switch(
     ext,
-    "rds" = write_rds,
+    "rds" = readr::write_rds,
     "csv" = write_csv2
   )
   f(x, path)
-  pb_upload(
+  piggyback::pb_upload(
     path,
     repo = worldfootballr_repo,
     tag = tag
@@ -28,7 +28,7 @@ write_worldfootballr <- function(x, name, tag, ext = c("rds", "csv")) {
 }
 
 write_worldfootballr_rds_and_csv <- function(x, name, tag) {
-  walk(
+  purrr::walk(
     c("rds", "csv"),
     ~write_worldfootballr(
       x = x,

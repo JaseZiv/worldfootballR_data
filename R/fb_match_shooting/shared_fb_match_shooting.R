@@ -1,5 +1,5 @@
 library(dplyr)
-params <- bind_rows(
+params <- dplyr::bind_rows(
   'big5' = list(
     country = c('ENG', 'ESP', 'FRA', 'GER', 'ITA'),
     tier = '1st',
