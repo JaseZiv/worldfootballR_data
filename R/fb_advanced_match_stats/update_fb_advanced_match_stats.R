@@ -101,7 +101,7 @@ update_fb_advanced_match_stats <- function(
     season_end_year = latest_season
   )
   
-  existing_data <- read_worldfootballr_rds(
+  existing_data <- read_worldfootballr(
     name = name, 
     tag = fb_advanced_match_stats_tag
   )

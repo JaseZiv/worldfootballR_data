@@ -43,3 +43,25 @@ read_worldfootballr_rds <- function(name, tag) {
   path <- sprintf("https://github.com/%s/releases/download/%s/%s.rds", worldfootballr_repo, tag, name)
   readRDS(url(path))
 }
+
+read_worldfootballr_csv <- function(name, tag) {
+  path <- sprintf("https://github.com/%s/releases/download/%s/%s.csv", worldfootballr_repo, tag, name)
+  read.csv(path)
+}
+
+safely_read_worldfootballr_rds <- purrr::safely(read_worldfootballr_rds)
+
+read_worldfootballr <- function(name, tag) {
+  res <- safely_read_worldfootballr_rds(name, tag)
+  if (is.null(res$error)) {
+    return(res$value)
+  }
+  message(
+    sprintf(
+      'Missing RDS file at `name = "%s"` (`tag: "%s"`).\nTrying to read from the CSV.',
+      name, 
+      tag
+    )
+  )
+  read_worldfootballr_csv(name, tag)
+}
