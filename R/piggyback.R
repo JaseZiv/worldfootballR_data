@@ -54,7 +54,7 @@ safely_read_worldfootballr_rds <- purrr::safely(read_worldfootballr_rds)
 read_worldfootballr <- function(name, tag) {
   res <- safely_read_worldfootballr_rds(name, tag)
   if (is.null(res$error)) {
-    return(res$value)
+    return(res$result)
   }
   message(
     sprintf(
