@@ -24,7 +24,18 @@ matched_data <- matched_data %>%
 missing_pos <- matched_data %>% filter(!is.na(UrlTmarkt) & is.na(TmPos)) %>% pull(UrlTmarkt)
 
 # for these URLs, we can get their positions using the `tm_player_bio` function
-missing_pos_bios <- tm_player_bio(player_urls = missing_pos)
+missing_pos_bios <- data.frame()
+
+for(i in 1:length(missing_pos)) {
+  Sys.sleep(20)
+  print(paste0("scraping player ", i, " of ", length(missing_pos)))
+  
+  each_bio <- tm_player_bio(player_urls = missing_pos[i])
+  
+  missing_pos_bios <- bind_rows(
+    missing_pos_bios, each_bio
+  )
+}
 
 # need to clean these up from the bio data - for some reason soe of them come with the position group (say "midfield") then the true position "Left Midfielder"
 # we only want "Left Midfiender"
