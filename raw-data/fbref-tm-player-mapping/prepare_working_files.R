@@ -2,12 +2,14 @@ library(worldfootballR)
 library(tidyverse)
 library(here)
 
-playing_time <- fb_big5_advanced_season_stats(season_end_year = 2024,
+playing_time <- fb_big5_advanced_season_stats(season_end_year = 2025,
                                               stat_type = "playing_time",
                                               team_or_player = "player")
 
-tm <- tm_player_market_values(country_name = c("England", "Spain", "France", "Italy", "Germany"),
-                               start_year = 2023)
+# tm <- tm_player_market_values(country_name = c("England", "Spain", "France", "Italy", "Germany"),
+#                                start_year = 2023)
+
+tm <- readRDS("../../Desktop/top5_player_val_hack.rds")
 
 
 
@@ -25,7 +27,7 @@ fbref <- fbref %>%
   arrange(Player)
 
 tm <- tm %>%
-  select(comp_name, region, country, season_start_year, squad, player_name, player_position,
+  select(comp_name, country, season_start_year, squad, player_name, player_position,
          player_dob, player_nationality, player_market_value_euro, player_url) %>%
   arrange(player_name)
 
