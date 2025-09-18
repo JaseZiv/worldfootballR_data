@@ -1,8 +1,14 @@
 # worldfootballR_data <img src="man/figures/logo.png" align="right" width="181" height="201"/>
 
-<!-- badges: start -->
-![run_scrapes](https://github.com/JaseZiv/worldfootballR_data/workflows/run_extracts/badge.svg)
-<!-- badges: end -->
+# Archived
+
+This data repo and the associated [`worldfootballR`](https://github.com/JaseZiv/worldfootballR) package will no longer be maintained. 
+
+Thanks to you all for all you continued support over the years of maintaining it. It was a pleasure.
+
+
+***
+
 
 # worldfootballR_data
 Repository to hold various data sets scraped from the sites supported in the [`worldfootballR`](https://github.com/JaseZiv/worldfootballR) package. Current sites include:
